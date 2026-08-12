@@ -1,0 +1,6 @@
+{
+  "name": "My Small Things",
+  "description": "3D product showcase and catalog for My Small Things luxury compact tech.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
