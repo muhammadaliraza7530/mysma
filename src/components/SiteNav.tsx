@@ -19,17 +19,17 @@ export function SiteNav() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-[100] w-full max-w-[100vw] bg-black border-b border-neutral-900 transition-all duration-300 ${
-        scrolled ? "py-2.5" : "py-4"
+        scrolled ? "py-2" : "py-3"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-5">
-        <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+        <Link to="/" className="flex items-center shrink-0" onClick={() => setOpen(false)}>
           <img
             src="/images/logo.png"
             alt="My Small Things logo"
-            width={192}
-            height={64}
-            className="h-12 w-auto rounded-lg mix-blend-screen"
+            width={240}
+            height={80}
+            className="h-14 sm:h-16 w-auto object-contain mix-blend-screen transition-transform duration-300 hover:scale-105"
           />
         </Link>
 

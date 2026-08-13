@@ -35,8 +35,9 @@ function ProductsPage() {
             <span className="text-xs tracking-[0.3em] text-primary uppercase">
               Compact Tech Range
             </span>
-            <h1 className="mt-4 text-4xl font-semibold sm:text-5xl md:text-7xl">
-              Small things, <span className="text-gradient">built big</span>
+            <h1 className="mt-4 text-4xl font-semibold sm:text-5xl md:text-7xl leading-tight pb-2">
+              Small things,{" "}
+              <span className="text-gradient inline-block pb-1 sm:pb-2">built big</span>
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-xs sm:text-sm md:text-base text-muted-foreground">
               Every product is presented as an interactive 3D surface. Hover, rotate, and explore in

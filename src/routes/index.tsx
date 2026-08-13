@@ -53,9 +53,9 @@ function Home() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <h1 className="mt-6 text-[13vw] leading-[0.92] font-semibold md:text-[7rem]">
-              <span className="block">My Small</span>
-              <span className="text-gradient block">Things</span>
+            <h1 className="mt-6 text-[13vw] leading-[1.15] sm:leading-[1.12] md:leading-[1.1] font-semibold md:text-[7rem] pb-2 sm:pb-4">
+              <span className="block pb-1">My Small</span>
+              <span className="text-gradient inline-block pb-3 sm:pb-4 pt-1">Things</span>
             </h1>
           </ScrollReveal>
 
@@ -149,8 +149,9 @@ function Home() {
               <span className="text-xs tracking-[0.3em] text-primary uppercase">
                 Smart Sky Panel
               </span>
-              <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl">
-                One tap. <span className="text-gradient">Everything handled.</span>
+              <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl leading-tight">
+                One tap.{" "}
+                <span className="text-gradient inline-block pb-1 sm:pb-2">Everything handled.</span>
               </h2>
               <p className="mt-4 text-sm text-muted-foreground md:text-base">
                 A glass command surface with constellation lighting, eight intelligent programs and
@@ -182,8 +183,8 @@ function Home() {
         <ScrollReveal direction="up" distance={40}>
           <div className="glass-panel relative overflow-hidden rounded-[28px] sm:rounded-[40px] px-5 py-12 sm:px-6 sm:py-16 text-center">
             <div className="pointer-events-none absolute inset-0 scene-vignette" />
-            <h2 className="relative text-3xl font-semibold sm:text-4xl md:text-5xl">
-              Ready for the <span className="text-gradient">small upgrade</span>?
+            <h2 className="relative text-3xl font-semibold sm:text-4xl md:text-5xl leading-tight pb-1">
+              Ready for the <span className="text-gradient inline-block pb-1">small upgrade</span>?
             </h2>
             <p className="relative mx-auto mt-4 max-w-lg text-sm text-muted-foreground sm:text-base">
               Free delivery, one-year warranty and a support team that actually answers.
