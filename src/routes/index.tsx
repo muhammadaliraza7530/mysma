@@ -75,12 +75,12 @@ function Home() {
                 Explore the collection
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-              <a
-                href="#collection"
+              <Link
+                to="/products"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3.5 text-sm font-medium transition-all duration-300 hover:-translate-y-1 hover:border-primary/60"
               >
-                See it move
-              </a>
+                See all products
+              </Link>
             </div>
           </ScrollReveal>
         </div>
@@ -115,33 +115,6 @@ function Home() {
 
       {/* 2X2 PRODUCT GRID SECTION */}
       <ProductGrid2x2 />
-
-      {/* COLLECTION GRID */}
-      <section
-        id="collection"
-        className="relative mx-auto max-w-7xl px-4 sm:px-5 py-20 md:py-32 overflow-hidden"
-      >
-        <ScrollReveal direction="up">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="text-xs tracking-[0.3em] text-primary uppercase">The collection</span>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-6xl">
-              Four objects. Zero compromise.
-            </h2>
-            <p className="mt-4 text-xs sm:text-sm md:text-base text-muted-foreground">
-              Hover, tilt and rotate. Every card is a real 3D surface — the way a premium product
-              page should feel.
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <div className="mt-8 sm:mt-14 grid grid-cols-2 items-start gap-3 sm:gap-7 lg:grid-cols-4 overflow-hidden [perspective:1400px]">
-          {products.map((p, i) => (
-            <ScrollTilt3D key={p.slug} index={i}>
-              <ProductCard3D product={p} index={i} />
-            </ScrollTilt3D>
-          ))}
-        </div>
-      </section>
 
       {/* FEATURE SPLIT */}
       <section className="relative mx-auto max-w-7xl px-4 sm:px-5 py-16 md:py-28 overflow-hidden">

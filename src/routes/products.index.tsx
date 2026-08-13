@@ -33,7 +33,7 @@ function ProductsPage() {
         <ScrollReveal direction="up">
           <div className="relative text-center">
             <span className="text-xs tracking-[0.3em] text-primary uppercase">
-              The 3D Collection
+              Compact Tech Range
             </span>
             <h1 className="mt-4 text-4xl font-semibold sm:text-5xl md:text-7xl">
               Small things, <span className="text-gradient">built big</span>
