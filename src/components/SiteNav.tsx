@@ -27,9 +27,9 @@ export function SiteNav() {
           <img
             src="/images/logo.png"
             alt="My Small Things logo"
-            width={160}
-            height={48}
-            className="h-9 w-auto mix-blend-screen"
+            width={192}
+            height={64}
+            className="h-12 w-auto rounded-lg mix-blend-screen"
           />
         </Link>
 
