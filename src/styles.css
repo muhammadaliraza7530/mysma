@@ -65,44 +65,44 @@
   --radius: 1rem;
 
   /* Brand palette — updated to project theme */
-  --background: #0B0F17; /* deep rich black / dark navy */
-  --foreground: #FFFFFF; /* pristine white for typography */
+  --background: #0b0f17; /* deep rich black / dark navy */
+  --foreground: #ffffff; /* pristine white for typography */
   --card: #121824; /* secondary card surface */
-  --card-foreground: #FFFFFF;
+  --card-foreground: #ffffff;
   --popover: #121824;
-  --popover-foreground: #FFFFFF;
-  --primary: #3B82F6; /* vibrant logo blue */
-  --primary-hover: #2563EB;
-  --primary-foreground: #FFFFFF;
-  --secondary: #0B0F17;
-  --secondary-foreground: #FFFFFF;
-  --muted: #0B0F17;
-  --muted-foreground: #94A3B8;
-  --accent: #3B82F6;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
+  --popover-foreground: #ffffff;
+  --primary: #3b82f6; /* vibrant logo blue */
+  --primary-hover: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #0b0f17;
+  --secondary-foreground: #ffffff;
+  --muted: #0b0f17;
+  --muted-foreground: #94a3b8;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
   --border: rgba(30, 41, 59, 0.22); /* subtle #1E293B */
   --input: rgba(59, 130, 246, 0.12);
-  --ring: #3B82F6;
-  --chart-1: #3B82F6;
-  --chart-2: #6FB3FA;
-  --chart-3: #2563EB;
-  --chart-4: #A8CFFD;
-  --chart-5: #0F5FBF;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #6fb3fa;
+  --chart-3: #2563eb;
+  --chart-4: #a8cffd;
+  --chart-5: #0f5fbf;
   --sidebar: #121824;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #121824;
-  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(30, 41, 59, 0.22);
-  --sidebar-ring: #3B82F6;
+  --sidebar-ring: #3b82f6;
 
-  --brand-deep: #0B0F17;
-  --gradient-brand: linear-gradient(135deg, #3B82F6, #8CC2FF);
-  --gradient-surface: linear-gradient(160deg, rgba(59,130,246,0.12), transparent 60%);
-  --shadow-glow: 0 0 60px -12px rgba(59,130,246,0.55);
+  --brand-deep: #0b0f17;
+  --gradient-brand: linear-gradient(135deg, #3b82f6, #8cc2ff);
+  --gradient-surface: linear-gradient(160deg, rgba(59, 130, 246, 0.12), transparent 60%);
+  --shadow-glow: 0 0 60px -12px rgba(59, 130, 246, 0.55);
   --shadow-deep: 0 30px 80px -30px rgba(0, 0, 0, 0.85);
 }
 
@@ -207,18 +207,24 @@
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform, filter, opacity;
-  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms ease;
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms ease;
 }
 
 .card-3d {
   /* base transform consumes CSS variables so pointermove updates are applied immediately */
-  transform: perspective(1000px) rotateX(var(--card-tilt-x, 0)) rotateY(var(--card-tilt-y, 0)) var(--card-pop, translateZ(0));
-  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+  transform: perspective(1000px) rotateX(var(--card-tilt-x, 0)) rotateY(var(--card-tilt-y, 0))
+    var(--card-pop, translateZ(0));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
 }
 
 .card-3d:hover {
-  transform: perspective(1000px) rotateX(var(--card-tilt-x, 0)) rotateY(var(--card-tilt-y, 0)) translateZ(18px);
-  box-shadow: 0 18px 80px rgba(59,130,246,0.18), 0 4px 18px rgba(0,0,0,0.6);
+  transform: perspective(1000px) rotateX(var(--card-tilt-x, 0)) rotateY(var(--card-tilt-y, 0))
+    translateZ(18px);
+  box-shadow:
+    0 18px 80px rgba(59, 130, 246, 0.18),
+    0 4px 18px rgba(0, 0, 0, 0.6);
 }
 
 /* default custom properties for tilt/pop */
@@ -236,7 +242,7 @@
 }
 
 .card-3d.is-hovered {
-  box-shadow: 0 26px 100px rgba(59,130,246,0.16);
+  box-shadow: 0 26px 100px rgba(59, 130, 246, 0.16);
 }
 
 @utility marquee-track {

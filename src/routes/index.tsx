@@ -5,7 +5,9 @@ import { products } from "@/data/products";
 import { ClientOnly, useIsMobile } from "@/components/ClientOnly";
 import { ProductCard3D } from "@/components/ProductCard3D";
 import { ProductGrid2x2 } from "@/components/ProductGrid2x2";
+import { CircularProductOrbit } from "@/components/CircularProductOrbit";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { ScrollTilt3D } from "@/components/ScrollTilt3D";
 
 const HeroScene = lazy(() => import("@/components/three/HeroScene"));
 
@@ -108,6 +110,12 @@ function Home() {
         </div>
       </div>
 
+      {/* CIRCULAR 3D PRODUCT ORBIT (4 PRODUCTS MOVING IN A CIRCLE) */}
+      <CircularProductOrbit />
+
+      {/* 2X2 PRODUCT GRID SECTION */}
+      <ProductGrid2x2 />
+
       {/* COLLECTION GRID */}
       <section
         id="collection"
@@ -126,27 +134,14 @@ function Home() {
           </div>
         </ScrollReveal>
 
-        <div className="mt-8 sm:mt-14 grid grid-cols-2 items-start gap-2.5 sm:gap-7 lg:grid-cols-4 overflow-hidden">
+        <div className="mt-8 sm:mt-14 grid grid-cols-2 items-start gap-3 sm:gap-7 lg:grid-cols-4 overflow-hidden [perspective:1400px]">
           {products.map((p, i) => (
-            <ScrollReveal
-              key={p.slug}
-              delay={i * 0.15}
-              direction="up"
-              distance={40}
-              className={
-                i % 2 === 0
-                  ? "translate-y-2 sm:translate-y-6 lg:translate-y-10"
-                  : "-translate-y-2 sm:-translate-y-4 lg:-translate-y-8"
-              }
-            >
+            <ScrollTilt3D key={p.slug} index={i}>
               <ProductCard3D product={p} index={i} />
-            </ScrollReveal>
+            </ScrollTilt3D>
           ))}
         </div>
       </section>
-
-      {/* 2X2 PRODUCT GRID SECTION */}
-      <ProductGrid2x2 />
 
       {/* FEATURE SPLIT */}
       <section className="relative mx-auto max-w-7xl px-4 sm:px-5 py-16 md:py-28 overflow-hidden">
