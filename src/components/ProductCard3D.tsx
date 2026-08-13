@@ -45,14 +45,14 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
         delay: index * 0.25,
       }}
       style={{ perspective: "1200px" }}
-      className="h-full"
+      className="h-full w-full max-w-full overflow-hidden"
     >
       <div
         ref={ref}
         onMouseMove={onMove}
         onMouseLeave={reset}
         style={style}
-        className="tilt-3d group glass-panel relative h-full overflow-hidden rounded-2xl sm:rounded-[28px] p-2.5 sm:p-5 hover:glow-ring"
+        className="tilt-3d group glass-panel relative h-full w-full max-w-full overflow-hidden rounded-2xl sm:rounded-[28px] p-2.5 sm:p-5 hover:glow-ring"
       >
         <div className="pointer-events-none absolute inset-0 scene-vignette opacity-60" />
         <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-3xl bg-brand-deep">

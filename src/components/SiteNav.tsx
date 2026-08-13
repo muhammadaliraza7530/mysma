@@ -18,11 +18,11 @@ export function SiteNav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+      className={`fixed inset-x-0 top-0 z-[100] w-full max-w-[100vw] transition-all duration-500 ${
         scrolled ? "glass-panel py-2" : "py-4"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-5">
         <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
           <img
             src="/images/logo.png"
@@ -69,7 +69,7 @@ export function SiteNav() {
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((o) => !o)}
-            className="rounded-full border border-border p-2 md:hidden"
+            className="rounded-full border border-border p-2 text-foreground bg-background/80 hover:bg-accent md:hidden"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -77,27 +77,36 @@ export function SiteNav() {
       </nav>
 
       {open && (
-        <div className="glass-panel mx-4 mt-3 rounded-2xl p-4 md:hidden">
+        <div className="mx-4 mt-3 rounded-2xl border border-border/80 bg-slate-950/95 p-5 shadow-2xl backdrop-blur-md md:hidden">
           <div className="flex flex-col gap-1">
-            <Link to="/" onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-sm">
+            <Link
+              to="/"
+              onClick={() => setOpen(false)}
+              className="rounded-xl px-4 py-3 text-base font-semibold text-foreground transition-colors hover:bg-white/10"
+            >
               Home
             </Link>
             <Link
               to="/products"
               onClick={() => setOpen(false)}
-              className="rounded-xl px-3 py-3 text-sm"
+              className="rounded-xl px-4 py-3 text-base font-semibold text-foreground transition-colors hover:bg-white/10"
             >
               Collection
             </Link>
+            <div className="my-2 h-px bg-border/60" />
+            <span className="px-4 text-xs font-semibold tracking-wider text-primary uppercase">
+              Products
+            </span>
             {products.map((p) => (
               <Link
                 key={p.slug}
                 to="/products/$slug"
                 params={{ slug: p.slug }}
                 onClick={() => setOpen(false)}
-                className="rounded-xl px-3 py-3 text-sm text-muted-foreground"
+                className="flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
               >
-                {p.name}
+                <span>{p.name}</span>
+                <span className="text-xs font-semibold text-primary">${p.price}</span>
               </Link>
             ))}
           </div>

@@ -44,7 +44,7 @@ function ProductPlane({
         </mesh>
         <mesh position={[0, -0.95, -0.05]} rotation={[-Math.PI / 2.2, 0, 0]}>
           <circleGeometry args={[0.5, 48]} />
-          <meshBasicMaterial color="#39b7ea" transparent opacity={0.12} />
+          <meshBasicMaterial color="#4CA1FF" transparent opacity={0.15} />
         </mesh>
       </Float>
     </group>
@@ -72,7 +72,7 @@ export default function HeroScene({ mobile = false }: { mobile?: boolean }) {
     >
       <Suspense fallback={<Html center />}>
         <ambientLight intensity={1.2} />
-        <pointLight position={[4, 4, 4]} intensity={40} color="#5cc8f5" />
+        <pointLight position={[4, 4, 4]} intensity={40} color="#4CA1FF" />
         {items.map((url, i) => (
           <ProductPlane
             key={url}
@@ -89,7 +89,7 @@ export default function HeroScene({ mobile = false }: { mobile?: boolean }) {
           scale={[12, 7, 6]}
           size={2.4}
           speed={0.4}
-          color="#7fd8ff"
+          color="#4CA1FF"
           opacity={0.7}
         />
       </Suspense>

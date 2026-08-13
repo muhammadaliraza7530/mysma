@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap",
       },
     ],
   }),
@@ -116,11 +116,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark max-w-[100vw] overflow-x-hidden">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="relative w-full max-w-[100vw] overflow-x-hidden bg-background text-foreground">
         {children}
         <Scripts />
       </body>
@@ -134,12 +134,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <SiteNav />
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <SiteFooter />
-        <CartDrawer />
-        <Toaster position="bottom-right" theme="dark" />
+        <div className="relative w-full max-w-[100vw] overflow-x-hidden">
+          <SiteNav />
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <SiteFooter />
+          <CartDrawer />
+          <Toaster position="bottom-right" theme="dark" />
+        </div>
       </CartProvider>
     </QueryClientProvider>
   );

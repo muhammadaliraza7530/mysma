@@ -44,7 +44,7 @@ export function CartDrawer() {
       />
 
       {/* Drawer */}
-      <div className="glass-panel relative z-10 flex h-full w-full max-w-md flex-col bg-background/95 p-6 shadow-2xl transition-transform duration-300">
+      <div className="glass-panel relative z-10 flex h-full w-full max-w-[100vw] sm:max-w-md flex-col bg-background/95 p-4 sm:p-6 shadow-2xl transition-transform duration-300">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border/60 pb-4">
           <div className="flex items-center gap-2">

@@ -34,7 +34,7 @@ function ProductModel({ groupRef }: { groupRef: React.RefObject<THREE.Group | nu
       {/* Chrome Bezel Rim */}
       <mesh position={[0, 0, 1.22]} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.78, 0.05, 32, 64]} />
-        <meshStandardMaterial color="#60a5fa" metalness={0.95} roughness={0.05} />
+        <meshStandardMaterial color="#4CA1FF" metalness={0.95} roughness={0.05} />
       </mesh>
 
       {/* Front Door Glass displaying product cut-out */}
@@ -46,7 +46,7 @@ function ProductModel({ groupRef }: { groupRef: React.RefObject<THREE.Group | nu
       {/* Glowing LED Ring */}
       <mesh position={[0, 0, 1.24]}>
         <ringGeometry args={[0.78, 0.82, 64]} />
-        <meshBasicMaterial color="#38bdf8" toneMapped={false} />
+        <meshBasicMaterial color="#4CA1FF" toneMapped={false} />
       </mesh>
 
       {/* Base Accent */}
@@ -58,7 +58,7 @@ function ProductModel({ groupRef }: { groupRef: React.RefObject<THREE.Group | nu
       {/* Subtle Orbital Halo */}
       <mesh rotation={[Math.PI / 3, Math.PI / 6, 0]}>
         <torusGeometry args={[2.0, 0.015, 16, 100]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.4} />
+        <meshBasicMaterial color="#4CA1FF" transparent opacity={0.4} />
       </mesh>
     </group>
   );
@@ -183,7 +183,7 @@ export function ScrollProductShowcase() {
             <fog attach="fog" args={["#050816", 7, 14]} />
             <ambientLight intensity={1.15} />
             <directionalLight position={[3, 4, 3]} intensity={2.4} castShadow />
-            <pointLight position={[-4, 2, 4]} intensity={30} color="#5ad1ff" />
+            <pointLight position={[-4, 2, 4]} intensity={30} color="#4CA1FF" />
             <Float speed={1.6} rotationIntensity={0.5} floatIntensity={0.7}>
               <ProductModel groupRef={modelRef} />
             </Float>

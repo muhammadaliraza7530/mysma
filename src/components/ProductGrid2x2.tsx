@@ -3,23 +3,30 @@ import { Link } from "@tanstack/react-router";
 import { Plus, Minus, ShoppingCart, Zap, Check } from "lucide-react";
 import { products, Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 export function ProductGrid2x2() {
   return (
-    <section className="relative mx-auto max-w-7xl px-3 sm:px-5 py-12 md:py-24">
-      <div data-reveal className="mx-auto mb-8 sm:mb-12 max-w-2xl text-center">
-        <span className="text-xs tracking-[0.3em] text-primary uppercase">Featured Collection</span>
-        <h2 className="mt-2 sm:mt-3 text-2xl sm:text-3xl font-semibold md:text-5xl">
-          Compact Power. Unmatched Design.
-        </h2>
-        <p className="mt-2 sm:mt-3 text-muted-foreground text-xs sm:text-sm md:text-base">
-          Select your quantity and order directly with instant checkout.
-        </p>
-      </div>
+    <section className="relative mx-auto max-w-7xl px-3 sm:px-5 py-12 md:py-24 overflow-hidden">
+      <ScrollReveal direction="up">
+        <div className="mx-auto mb-8 sm:mb-12 max-w-2xl text-center">
+          <span className="text-xs tracking-[0.3em] text-primary uppercase">
+            Featured Collection
+          </span>
+          <h2 className="mt-2 sm:mt-3 text-2xl sm:text-3xl font-semibold md:text-5xl">
+            Compact Power. Unmatched Design.
+          </h2>
+          <p className="mt-2 sm:mt-3 text-muted-foreground text-xs sm:text-sm md:text-base">
+            Select your quantity and order directly with instant checkout.
+          </p>
+        </div>
+      </ScrollReveal>
 
-      <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductGridCard key={product.slug} product={product} />
+      <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4 w-full max-w-full overflow-hidden">
+        {products.map((product, idx) => (
+          <ScrollReveal key={product.slug} delay={idx * 0.12} direction="up" distance={30}>
+            <ProductGridCard product={product} />
+          </ScrollReveal>
         ))}
       </div>
     </section>
@@ -45,7 +52,7 @@ function ProductGridCard({ product }: { product: Product }) {
   };
 
   return (
-    <div className="glass-panel group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-border/60 p-2.5 sm:p-5 md:p-6 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 hover:glow-ring">
+    <div className="glass-panel group relative flex h-full w-full max-w-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-border/60 p-2.5 sm:p-5 md:p-6 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50 hover:glow-ring">
       <div>
         {/* Product Image & Link */}
         <Link

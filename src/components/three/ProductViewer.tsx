@@ -38,7 +38,7 @@ export default function ProductViewer({ url, mobile = false }: { url: string; mo
     >
       <Suspense fallback={null}>
         <ambientLight intensity={1.1} />
-        <spotLight position={[5, 6, 5]} angle={0.4} intensity={80} color="#7fd8ff" />
+        <spotLight position={[5, 6, 5]} angle={0.4} intensity={80} color="#4CA1FF" />
         <PresentationControls
           global
           snap

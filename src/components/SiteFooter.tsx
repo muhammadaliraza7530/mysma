@@ -3,7 +3,7 @@ import { products } from "@/data/products";
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-border/60 pt-20">
+    <footer className="relative w-full max-w-[100vw] overflow-hidden border-t border-border/60 pt-16 md:pt-20">
       <div className="pointer-events-none absolute inset-0 scene-vignette opacity-70" />
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 pb-12 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
