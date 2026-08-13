@@ -64,50 +64,46 @@
 :root {
   --radius: 1rem;
 
-  /* Brand palette sampled from public/images/logo.png (black / white / #338FF6) */
-  --background: #000000;
-  --foreground: #FFFFFF;
-  --card: #0B0B0C;
+  /* Brand palette — updated to project theme */
+  --background: #0B0F17; /* deep rich black / dark navy */
+  --foreground: #FFFFFF; /* pristine white for typography */
+  --card: #121824; /* secondary card surface */
   --card-foreground: #FFFFFF;
-  --popover: #0B0B0C;
+  --popover: #121824;
   --popover-foreground: #FFFFFF;
-  --primary: #338FF6;
-  --primary-hover: #1F7DE8;
-  --primary-foreground: #000000;
-  --secondary: #141416;
+  --primary: #3B82F6; /* vibrant logo blue */
+  --primary-hover: #2563EB;
+  --primary-foreground: #FFFFFF;
+  --secondary: #0B0F17;
   --secondary-foreground: #FFFFFF;
-  --muted: #141416;
-  --muted-foreground: #A1A1AA;
-  --accent: #338FF6;
-  --accent-foreground: #000000;
+  --muted: #0B0F17;
+  --muted-foreground: #94A3B8;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(51, 143, 246, 0.22);
-  --input: rgba(51, 143, 246, 0.25);
-  --ring: #338FF6;
-  --chart-1: #338FF6;
+  --border: rgba(30, 41, 59, 0.22); /* subtle #1E293B */
+  --input: rgba(59, 130, 246, 0.12);
+  --ring: #3B82F6;
+  --chart-1: #3B82F6;
   --chart-2: #6FB3FA;
-  --chart-3: #1F7DE8;
+  --chart-3: #2563EB;
   --chart-4: #A8CFFD;
   --chart-5: #0F5FBF;
-  --sidebar: #0B0B0C;
+  --sidebar: #121824;
   --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #338FF6;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #141416;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #121824;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: rgba(51, 143, 246, 0.22);
-  --sidebar-ring: #338FF6;
+  --sidebar-border: rgba(30, 41, 59, 0.22);
+  --sidebar-ring: #3B82F6;
 
-  --brand-deep: #000000;
-  --gradient-brand: linear-gradient(135deg, #338FF6, #8CC2FF);
-  --gradient-surface: linear-gradient(
-    160deg,
-    rgba(51, 143, 246, 0.15),
-    transparent 60%
-  );
-  --shadow-glow: 0 0 60px -12px rgba(51, 143, 246, 0.65);
-  --shadow-deep: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  --brand-deep: #0B0F17;
+  --gradient-brand: linear-gradient(135deg, #3B82F6, #8CC2FF);
+  --gradient-surface: linear-gradient(160deg, rgba(59,130,246,0.12), transparent 60%);
+  --shadow-glow: 0 0 60px -12px rgba(59,130,246,0.55);
+  --shadow-deep: 0 30px 80px -30px rgba(0, 0, 0, 0.85);
 }
 
 .dark {

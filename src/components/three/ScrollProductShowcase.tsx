@@ -1,64 +1,26 @@
 import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
-import { Environment, Float } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
+import { products } from "@/data/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ProductModel({ groupRef }: { groupRef: React.RefObject<THREE.Group | null> }) {
-  const washerTexture = useLoader(THREE.TextureLoader, "/images/hero/washer.png");
-  const panelTexture = useLoader(THREE.TextureLoader, "/images/washer-panel.jpg");
+function ProductModel({ groupRef, cutout }: { groupRef: React.RefObject<THREE.Group | null>; cutout: string }) {
+  const texture = useLoader(THREE.TextureLoader, cutout);
 
   return (
-    <group ref={groupRef} scale={1.2} position={[0, 0.2, 0]}>
-      {/* Main Body Cylindrical Appliance Chassis */}
-      <mesh castShadow receiveShadow position={[0, 0, 0]}>
-        <cylinderGeometry args={[1.2, 1.25, 2.0, 64]} />
-        <meshStandardMaterial color="#0b121e" metalness={0.85} roughness={0.15} />
+    <group ref={groupRef} position={[0, 0.2, 0]}>
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[1.05, 1.05, 1.2, 64]} />
+        <meshStandardMaterial color="#0b1220" metalness={0.8} roughness={0.2} />
       </mesh>
 
-      {/* Top Cap */}
-      <mesh castShadow position={[0, 1.02, 0]}>
-        <cylinderGeometry args={[1.22, 1.2, 0.08, 64]} />
-        <meshStandardMaterial color="#1a273b" metalness={0.9} roughness={0.1} />
-      </mesh>
-
-      {/* Control Glass Screen on Top */}
-      <mesh position={[0, 1.07, 0.2]} rotation={[-Math.PI / 12, 0, 0]}>
-        <planeGeometry args={[1.1, 1.1]} />
-        <meshBasicMaterial map={panelTexture} toneMapped={false} />
-      </mesh>
-
-      {/* Chrome Bezel Rim */}
-      <mesh position={[0, 0, 1.22]} rotation={[0, 0, 0]}>
-        <torusGeometry args={[0.78, 0.05, 32, 64]} />
-        <meshStandardMaterial color="#4CA1FF" metalness={0.95} roughness={0.05} />
-      </mesh>
-
-      {/* Front Door Glass displaying product cut-out */}
-      <mesh position={[0, 0, 1.26]}>
-        <circleGeometry args={[0.76, 64]} />
-        <meshBasicMaterial map={washerTexture} transparent toneMapped={false} />
-      </mesh>
-
-      {/* Glowing LED Ring */}
-      <mesh position={[0, 0, 1.24]}>
-        <ringGeometry args={[0.78, 0.82, 64]} />
-        <meshBasicMaterial color="#4CA1FF" toneMapped={false} />
-      </mesh>
-
-      {/* Base Accent */}
-      <mesh castShadow position={[0, -1.05, 0]}>
-        <cylinderGeometry args={[1.3, 1.35, 0.12, 64]} />
-        <meshStandardMaterial color="#111827" metalness={0.7} roughness={0.3} />
-      </mesh>
-
-      {/* Subtle Orbital Halo */}
-      <mesh rotation={[Math.PI / 3, Math.PI / 6, 0]}>
-        <torusGeometry args={[2.0, 0.015, 16, 100]} />
-        <meshBasicMaterial color="#4CA1FF" transparent opacity={0.4} />
+      <mesh position={[0, 0, 0.66]}>
+        <circleGeometry args={[0.86, 64]} />
+        <meshBasicMaterial map={texture} transparent toneMapped={false} />
       </mesh>
     </group>
   );
@@ -163,7 +125,82 @@ function ScrollRig({
 
 export function ScrollProductShowcase() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const modelRef = useRef<THREE.Group>(null);
+  const rotation = useRef({ value: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // rotation control via GSAP ScrollTrigger: full 360 over the section
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.to(rotation.current, {
+        value: Math.PI * 2,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Reusable product instance that positions itself on an orbit and reacts to rotation.value
+  function ProductInstance({ index }: { index: number }) {
+    const groupRef = useRef<THREE.Group>(null);
+    const { viewport } = useThree();
+    const step = (Math.PI * 2) / products.length;
+    const base = index * step;
+
+    const cutout = products[index]?.cutout || "/images/hero/washer.png";
+
+    useFrame((_, delta) => {
+      if (!groupRef.current) return;
+
+      const rot = rotation.current.value;
+      const angle = base + rot;
+      // radius adapts to viewport width, keep models inside circular container
+      const radius = Math.max(1.6, Math.min(2.6, viewport.width * 0.9));
+
+      const x = Math.sin(angle) * radius * 0.6;
+      const z = Math.cos(angle) * radius * 0.9 - 1.8; // push back enough
+      const y = Math.sin(angle * 0.5) * 0.05;
+
+      // smooth position/rotation
+      groupRef.current.position.x += (x - groupRef.current.position.x) * Math.min(12 * delta, 1);
+      groupRef.current.position.z += (z - groupRef.current.position.z) * Math.min(12 * delta, 1);
+      groupRef.current.position.y += (y - groupRef.current.position.y) * Math.min(8 * delta, 1);
+
+      groupRef.current.rotation.y += ( -angle - groupRef.current.rotation.y) * Math.min(4 * delta, 1);
+
+      // depth factor: 1 when facing camera, 0 when at back
+      const facing = (Math.cos(angle) + 1) / 2;
+      const scale = 0.6 + 0.6 * facing; // 0.6 .. 1.2
+      groupRef.current.scale.x += (scale - groupRef.current.scale.x) * Math.min(8 * delta, 1);
+      groupRef.current.scale.y = groupRef.current.scale.x;
+
+      // set opacity on child materials to simulate depth/blur
+      groupRef.current.traverse((child: any) => {
+        if (child.isMesh && child.material) {
+          if (!Array.isArray(child.material)) {
+            child.material.transparent = true;
+            const targetOpacity = 0.35 + 0.65 * facing; // 0.35 .. 1
+            child.material.opacity += (targetOpacity - child.material.opacity) * Math.min(10 * delta, 1);
+            child.material.needsUpdate = true;
+          }
+        }
+      });
+    });
+
+    return (
+      <group ref={groupRef}>
+        <ProductModel groupRef={groupRef} cutout={cutout} />
+      </group>
+    );
+  }
 
   return (
     <section ref={sectionRef} className="relative h-[220vh] overflow-hidden">
@@ -171,30 +208,31 @@ export function ScrollProductShowcase() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(67,208,255,0.18),transparent_48%)]" />
 
         <div className="pointer-events-none absolute inset-x-0 top-14 z-10 mx-auto max-w-3xl px-5 text-center">
-          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">
-            Scroll system
-          </span>
+          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">Scroll system</span>
           <h2 className="mt-4 text-4xl font-semibold md:text-6xl">Move with the product.</h2>
         </div>
 
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0.55, 5.8], fov: 32 }} shadows dpr={[1, 1.8]}>
-            <color attach="background" args={["#050816"]} />
-            <fog attach="fog" args={["#050816", 7, 14]} />
-            <ambientLight intensity={1.15} />
-            <directionalLight position={[3, 4, 3]} intensity={2.4} castShadow />
-            <pointLight position={[-4, 2, 4]} intensity={30} color="#4CA1FF" />
-            <Float speed={1.6} rotationIntensity={0.5} floatIntensity={0.7}>
-              <ProductModel groupRef={modelRef} />
-            </Float>
-            <Environment preset="city" />
-            <ScrollRig modelRef={modelRef} sectionRef={sectionRef} />
-          </Canvas>
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <div ref={containerRef} className="w-[min(86vw,420px)] max-w-[420px] aspect-square rounded-full overflow-hidden bg-transparent shadow-2xl md:w-full md:max-w-none md:aspect-auto md:rounded-none">
+            <Canvas className="w-full h-full" camera={{ position: [0, 0.55, 5.8], fov: 38 }} shadows dpr={[1, 1.8]}>
+              <color attach="background" args={["#050816"]} />
+              <fog attach="fog" args={["#050816", 6, 14]} />
+              <ambientLight intensity={0.9} />
+              <directionalLight position={[3, 4, 3]} intensity={2.2} castShadow />
+              <pointLight position={[-4, 2, 4]} intensity={18} color="#4CA1FF" />
+
+              {/* Render 4 products around an orbit */}
+              {products.slice(0, 4).map((p, i) => (
+                <ProductInstance key={p.slug} index={i} />
+              ))}
+
+              <Environment preset="city" />
+            </Canvas>
+          </div>
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 mx-auto max-w-2xl px-5 text-center text-sm text-muted-foreground md:text-base">
-          A fluid product reveal that rotates with the scroll while the camera glides between reveal
-          states.
+          A fluid product reveal that rotates with the scroll while the camera glides between reveal states.
         </div>
       </div>
     </section>
