@@ -6,8 +6,6 @@ import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
 import { products } from "@/data/products";
 
-gsap.registerPlugin(ScrollTrigger);
-
 function ProductModel({ groupRef, cutout }: { groupRef: React.RefObject<THREE.Group | null>; cutout: string }) {
   const texture = useLoader(THREE.TextureLoader, cutout);
 
@@ -130,6 +128,10 @@ export function ScrollProductShowcase() {
 
   // rotation control via GSAP ScrollTrigger: full 360 over the section
   useEffect(() => {
+    // register GSAP plugins client-side only
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
     if (!sectionRef.current) return;
     const ctx = gsap.context(() => {
       gsap.to(rotation.current, {

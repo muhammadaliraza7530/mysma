@@ -6,8 +6,6 @@ import { products } from "@/data/products";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 function Starfield({ count = 800 }: { count?: number }) {
   const points = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -103,6 +101,9 @@ export default function CollectionShowcase() {
 
   useEffect(() => {
     if (!containerRef.current) return;
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
     // create a scroll-driven subtle tilt or rotation for the full assembly
     const ctx = gsap.context(() => {
       const obj = { ry: 0.0 };

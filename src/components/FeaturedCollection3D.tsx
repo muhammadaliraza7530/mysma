@@ -1,9 +1,9 @@
+"use client";
+
 import React, { useRef, useEffect } from "react";
 import { products } from "@/data/products";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function FeaturedCollection3D() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -13,6 +13,10 @@ export default function FeaturedCollection3D() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
+
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -24,9 +28,14 @@ export default function FeaturedCollection3D() {
         },
       });
 
-      tl.from(headingRef.current, { y: 24, opacity: 0, duration: 0.7, ease: "power3.out" })
-        .from(
-          gridRef.current?.children,
+      if (headingRef.current) {
+        tl.from(headingRef.current as HTMLElement, { y: 24, opacity: 0, duration: 0.7, ease: "power3.out" });
+      }
+
+      const gridChildren = gridRef.current ? (Array.from(gridRef.current.children) as HTMLElement[]) : [];
+      if (gridChildren.length) {
+        tl.from(
+          gridChildren as any,
           {
             y: 20,
             opacity: 0,
@@ -35,12 +44,13 @@ export default function FeaturedCollection3D() {
             ease: "power3.out",
           },
           "-=.45",
-        )
-        .from(
-          cardRefs.current,
-          { scale: 0.98, duration: 0.6, ease: "power3.out" },
-          "-=.5",
         );
+      }
+
+      const validCards = cardRefs.current.filter(Boolean) as HTMLElement[];
+      if (validCards.length) {
+        tl.from(validCards, { scale: 0.98, duration: 0.6, ease: "power3.out" }, "-=.5");
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -86,10 +96,12 @@ export default function FeaturedCollection3D() {
           {products.slice(0, 4).map((p, i) => (
             <div
               key={p.slug}
-              ref={(el) => (cardRefs.current[i] = el)}
+              ref={(el) => {
+                cardRefs.current[i] = el ?? null;
+              }}
               className="card-3d glass-card relative overflow-hidden rounded-2xl p-4"
-              onPointerMove={(e) => handlePointerMove(e, cardRefs.current[i])}
-              onPointerLeave={() => handlePointerLeave(cardRefs.current[i])}
+              onPointerMove={(e) => handlePointerMove(e, cardRefs.current[i] ?? null)}
+              onPointerLeave={() => handlePointerLeave(cardRefs.current[i] ?? null)}
             >
               <div className="absolute inset-0 pointer-events-none" aria-hidden>
                 <div className="absolute -inset-0.5 rounded-2xl border" style={{ borderColor: 'var(--border)' }} />

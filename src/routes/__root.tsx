@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useLocation } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
@@ -16,6 +17,8 @@ import { SiteNav } from "../components/SiteNav";
 import { SiteFooter } from "../components/SiteFooter";
 import { CartProvider } from "../context/CartContext";
 import { CartDrawer } from "../components/CartDrawer";
+import PageTransition from "../components/PageTransition";
+import { use3DEffects } from "../hooks/use3DEffects";
 
 function NotFoundComponent() {
   return (
@@ -130,14 +133,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  use3DEffects();
+  const location = useLocation();
 
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <div className="relative w-full max-w-[100vw] overflow-x-hidden">
           <SiteNav />
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
+          {/* Required: nested routes render here. Wrapping with PageTransition adds page fade/scale */}
+          <PageTransition locationKey={(location as any)?.pathname ?? "page"}>
+            <Outlet />
+          </PageTransition>
           <SiteFooter />
           <CartDrawer />
           <Toaster position="bottom-right" theme="dark" />
