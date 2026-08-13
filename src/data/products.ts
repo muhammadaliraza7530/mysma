@@ -7,6 +7,7 @@ export type Product = {
   image: string;
   cutout: string;
   gallery: string[];
+  video?: string;
   color: string;
   highlights: string[];
   specs: { label: string; value: string }[];
@@ -50,7 +51,17 @@ export const products: Product[] = [
     price: "PKR 27,500",
     image: "/images/shoe-washer.jpg",
     cutout: "/images/hero/shoe.png",
-    gallery: ["/images/shoe-washer.jpg", "/images/washer-panel.jpg"],
+    gallery: [
+      "/images/washer-panel.jpg",
+      "/images/washer-childlock.jpg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.57 AM.jpeg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.58 AM (1).jpeg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.58 AM.jpeg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.59 AM (1).jpeg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.59 AM (2).jpeg",
+      "/images/newShoeImages/WhatsApp Image 2026-08-13 at 4.13.59 AM.jpeg",
+    ],
+    video: "/images/shoeVideo.mp4",
     color: "#3aa7ff",
     highlights: [
       "Dedicated sneaker drum with soft ribs",

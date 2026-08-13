@@ -1,6 +1,16 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { lazy, useState } from "react";
-import { ArrowLeft, Check, RotateCw, Plus, Minus, ShoppingCart, Zap, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  RotateCw,
+  Plus,
+  Minus,
+  ShoppingCart,
+  Zap,
+  Sparkles,
+  Video,
+} from "lucide-react";
 import { getProduct, products, type Product } from "@/data/products";
 import { ClientOnly, useIsMobile } from "@/components/ClientOnly";
 import { useCart } from "@/context/CartContext";
@@ -153,30 +163,58 @@ function ProductPage() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3 [perspective:1400px]">
-          {product.gallery.map((g, idx) => (
-            <ScrollTilt3D key={g} index={idx}>
-              <div className="glass-panel relative overflow-hidden rounded-3xl p-3 border border-border/80 hover:border-primary/40 transition-colors">
-                <img
-                  src={g}
-                  alt={`${product.name} detail`}
-                  width={1024}
-                  height={1024}
-                  loading="lazy"
-                  className="w-full rounded-2xl object-cover transition-transform duration-700 hover:scale-105"
-                />
-                <img
-                  src="/images/logo.png"
-                  alt=""
-                  aria-hidden
-                  width={200}
-                  height={60}
-                  loading="lazy"
-                  className="pointer-events-none absolute bottom-5 right-5 h-6 w-auto opacity-70 mix-blend-screen"
-                />
-              </div>
-            </ScrollTilt3D>
-          ))}
+        {/* Additional Product Feature Images Grid */}
+        {product.gallery && product.gallery.length > 0 && (
+          <div className="mt-16">
+            <h2 className="mb-6 text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+              <Sparkles className="size-4 text-primary" /> Product Feature Details
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [perspective:1400px]">
+              {product.gallery.map((g, idx) => (
+                <ScrollTilt3D key={g} index={idx}>
+                  <div className="bg-[#0c1425] border border-slate-800 rounded-3xl p-3 overflow-hidden shadow-xl relative group transition-all duration-300 hover:border-primary/50">
+                    <img
+                      src={g}
+                      alt={`${product.name} detail ${idx + 1}`}
+                      width={1024}
+                      height={1024}
+                      loading="lazy"
+                      className="w-full h-auto object-cover rounded-2xl transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                    <img
+                      src="/images/logo.png"
+                      alt=""
+                      aria-hidden
+                      width={200}
+                      height={60}
+                      loading="lazy"
+                      className="pointer-events-none absolute bottom-5 right-5 h-5 w-auto opacity-70 mix-blend-screen"
+                    />
+                  </div>
+                </ScrollTilt3D>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Video Container at the End */}
+        <div className="mt-16">
+          <h2 className="mb-6 text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+            <Video className="size-5 text-primary" /> Product Video
+          </h2>
+          <div className="rounded-3xl border border-slate-800 bg-[#0c1425] p-3 shadow-xl">
+            <video
+              controls
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-auto object-contain rounded-2xl"
+            >
+              <source src={product.video || "/images/shoeVideo.mp4"} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
         </div>
       </section>
 
