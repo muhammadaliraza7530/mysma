@@ -156,6 +156,8 @@ export function ScrollProductShowcase() {
     const base = index * step;
 
     const cutout = products[index]?.cutout || "/images/hero/washer.png";
+    const hoverRef = useRef(false);
+    const pointerTilt = useRef({ x: 0, y: 0 });
 
     useFrame((_, delta) => {
       if (!groupRef.current) return;
@@ -174,11 +176,17 @@ export function ScrollProductShowcase() {
       groupRef.current.position.z += (z - groupRef.current.position.z) * Math.min(12 * delta, 1);
       groupRef.current.position.y += (y - groupRef.current.position.y) * Math.min(8 * delta, 1);
 
-      groupRef.current.rotation.y += ( -angle - groupRef.current.rotation.y) * Math.min(4 * delta, 1);
+      // apply hover tilt offset when interacting
+      const tiltY = hoverRef.current ? pointerTilt.current.y : 0;
+      const tiltX = hoverRef.current ? pointerTilt.current.x : 0;
+      const desiredRy = -angle + tiltY;
+      groupRef.current.rotation.y += (desiredRy - groupRef.current.rotation.y) * Math.min(4 * delta, 1);
+      groupRef.current.rotation.x += (tiltX - groupRef.current.rotation.x) * Math.min(6 * delta, 1);
 
       // depth factor: 1 when facing camera, 0 when at back
       const facing = (Math.cos(angle) + 1) / 2;
-      const scale = 0.6 + 0.6 * facing; // 0.6 .. 1.2
+      let scale = 0.6 + 0.6 * facing; // 0.6 .. 1.2
+      if (hoverRef.current) scale *= 1.06; // slight pop on hover
       groupRef.current.scale.x += (scale - groupRef.current.scale.x) * Math.min(8 * delta, 1);
       groupRef.current.scale.y = groupRef.current.scale.x;
 
@@ -188,15 +196,35 @@ export function ScrollProductShowcase() {
           if (!Array.isArray(child.material)) {
             child.material.transparent = true;
             const targetOpacity = 0.35 + 0.65 * facing; // 0.35 .. 1
-            child.material.opacity += (targetOpacity - child.material.opacity) * Math.min(10 * delta, 1);
+            const hoverBoost = hoverRef.current ? 0.12 : 0;
+            child.material.opacity += (targetOpacity + hoverBoost - child.material.opacity) * Math.min(10 * delta, 1);
             child.material.needsUpdate = true;
           }
         }
       });
     });
 
+    // pointer handlers for tilt effect
+    const onPointerMove = (e: any) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2; // -1..1
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+      // tilt values in radians
+      pointerTilt.current.x = THREE.MathUtils.clamp(-ny * 0.18, -0.35, 0.35);
+      pointerTilt.current.y = THREE.MathUtils.clamp(nx * 0.28, -0.7, 0.7);
+    };
+
+    const onPointerEnter = () => {
+      hoverRef.current = true;
+    };
+
+    const onPointerLeave = () => {
+      hoverRef.current = false;
+      pointerTilt.current.x = 0;
+      pointerTilt.current.y = 0;
+    };
+
     return (
-      <group ref={groupRef}>
+      <group ref={groupRef} onPointerMove={onPointerMove} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
         <ProductModel groupRef={groupRef} cutout={cutout} />
       </group>
     );

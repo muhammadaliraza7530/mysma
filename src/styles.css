@@ -193,6 +193,43 @@
     box-shadow 0.5s ease;
 }
 
+/* 3D scene utilities for product cards */
+.scene-3d {
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  perspective-origin: 50% 45%;
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, filter, opacity;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms ease;
+}
+
+.card-3d:hover {
+  transform: translateZ(20px) rotateX(var(--card-tilt-x, 0)) rotateY(var(--card-tilt-y, 0));
+  box-shadow: 0 18px 80px rgba(59,130,246,0.18), 0 4px 18px rgba(0,0,0,0.6);
+}
+
+/* default custom properties for tilt/pop */
+:root {
+  --card-tilt-x: 0deg;
+  --card-tilt-y: 0deg;
+  --card-pop: translateZ(0);
+}
+
+.glass-card {
+  background: color-mix(in oklab, var(--card) 65%, transparent);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+}
+
+.card-3d.is-hovered {
+  box-shadow: 0 26px 100px rgba(59,130,246,0.16);
+}
+
 @utility marquee-track {
   animation: marquee 26s linear infinite;
 }
