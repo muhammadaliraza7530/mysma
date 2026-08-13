@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { lazy, useState } from "react";
-import { ArrowLeft, Check, RotateCw, Plus, Minus, ShoppingCart, Zap } from "lucide-react";
+import { ArrowLeft, Check, RotateCw, Plus, Minus, ShoppingCart, Zap, Sparkles } from "lucide-react";
 import { getProduct, products, type Product } from "@/data/products";
 import { ClientOnly, useIsMobile } from "@/components/ClientOnly";
 import { useCart } from "@/context/CartContext";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { ScrollTilt3D } from "@/components/ScrollTilt3D";
+import { ProductCard3D } from "@/components/ProductCard3D";
 
 const ProductViewer = lazy(() => import("@/components/three/ProductViewer"));
 
@@ -138,21 +140,23 @@ function ProductPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 py-20">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 [perspective:1200px]">
           {product.specs.map((s, idx) => (
-            <ScrollReveal key={s.label} delay={idx * 0.1} direction="up" distance={24}>
-              <div className="glass-panel rounded-3xl p-6 transition-transform duration-500 hover:-translate-y-2">
-                <p className="text-xs tracking-widest text-muted-foreground uppercase">{s.label}</p>
-                <p className="mt-2 text-2xl font-semibold">{s.value}</p>
+            <ScrollTilt3D key={s.label} index={idx}>
+              <div className="glass-panel rounded-3xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:glow-ring">
+                <p className="text-xs tracking-widest text-primary font-semibold uppercase">
+                  {s.label}
+                </p>
+                <p className="mt-2 text-2xl font-bold text-foreground">{s.value}</p>
               </div>
-            </ScrollReveal>
+            </ScrollTilt3D>
           ))}
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-3 [perspective:1400px]">
           {product.gallery.map((g, idx) => (
-            <ScrollReveal key={g} delay={idx * 0.12} direction="up" distance={30}>
-              <div className="glass-panel relative overflow-hidden rounded-3xl p-3">
+            <ScrollTilt3D key={g} index={idx}>
+              <div className="glass-panel relative overflow-hidden rounded-3xl p-3 border border-border/80 hover:border-primary/40 transition-colors">
                 <img
                   src={g}
                   alt={`${product.name} detail`}
@@ -171,36 +175,25 @@ function ProductPage() {
                   className="pointer-events-none absolute bottom-5 right-5 h-6 w-auto opacity-70 mix-blend-screen"
                 />
               </div>
-            </ScrollReveal>
+            </ScrollTilt3D>
           ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-24">
         <ScrollReveal direction="up">
-          <h2 className="text-2xl font-semibold">More small things</h2>
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">More Small Things</h2>
+          </div>
         </ScrollReveal>
-        <div className="mt-6 grid gap-5 sm:grid-cols-3">
+        <div className="mt-6 grid gap-5 sm:grid-cols-3 [perspective:1400px]">
           {products
             .filter((p) => p.slug !== product.slug)
             .map((p, idx) => (
-              <ScrollReveal key={p.slug} delay={idx * 0.12} direction="up" distance={24}>
-                <Link
-                  to="/products/$slug"
-                  params={{ slug: p.slug }}
-                  className="glass-panel group overflow-hidden rounded-3xl p-3 transition-transform duration-500 hover:-translate-y-2 block"
-                >
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    width={1024}
-                    height={1024}
-                    loading="lazy"
-                    className="w-full rounded-2xl object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <p className="px-2 py-3 text-sm font-medium">{p.name}</p>
-                </Link>
-              </ScrollReveal>
+              <ScrollTilt3D key={p.slug} index={idx}>
+                <ProductCard3D product={p} index={idx} />
+              </ScrollTilt3D>
             ))}
         </div>
       </section>

@@ -29,13 +29,20 @@ export default function FeaturedCollection3D() {
       });
 
       if (headingRef.current) {
-        tl.from(headingRef.current as HTMLElement, { y: 24, opacity: 0, duration: 0.7, ease: "power3.out" });
+        tl.from(headingRef.current as HTMLElement, {
+          y: 24,
+          opacity: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        });
       }
 
-      const gridChildren = gridRef.current ? (Array.from(gridRef.current.children) as HTMLElement[]) : [];
+      const gridChildren = gridRef.current
+        ? (Array.from(gridRef.current.children) as HTMLElement[])
+        : [];
       if (gridChildren.length) {
         tl.from(
-          gridChildren as any,
+          gridChildren,
           {
             y: 20,
             opacity: 0,
@@ -85,14 +92,22 @@ export default function FeaturedCollection3D() {
     <section ref={sectionRef} className="relative py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div ref={headingRef} className="pointer-events-none text-center mb-8 md:mb-12">
-          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">The collection</span>
-          <h2 className="mt-4 text-3xl md:text-5xl font-semibold text-white">Four objects. Zero compromise.</h2>
+          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">
+            The collection
+          </span>
+          <h2 className="mt-4 text-3xl md:text-5xl font-semibold text-white">
+            Four objects. Zero compromise.
+          </h2>
           <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
-            Hover, tilt and rotate. Every card is a real 3D surface — the way a premium product page should feel.
+            Hover, tilt and rotate. Every card is a real 3D surface — the way a premium product page
+            should feel.
           </p>
         </div>
 
-        <div ref={gridRef} className="scene-3d grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          ref={gridRef}
+          className="scene-3d grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {products.slice(0, 4).map((p, i) => (
             <div
               key={p.slug}
@@ -104,7 +119,10 @@ export default function FeaturedCollection3D() {
               onPointerLeave={() => handlePointerLeave(cardRefs.current[i] ?? null)}
             >
               <div className="absolute inset-0 pointer-events-none" aria-hidden>
-                <div className="absolute -inset-0.5 rounded-2xl border" style={{ borderColor: 'var(--border)' }} />
+                <div
+                  className="absolute -inset-0.5 rounded-2xl border"
+                  style={{ borderColor: "var(--border)" }}
+                />
               </div>
 
               <div className="flex h-full flex-col md:flex-row gap-4 items-center md:items-start">
@@ -116,7 +134,9 @@ export default function FeaturedCollection3D() {
                   <div className="text-lg font-semibold text-white">{p.name}</div>
                   <div className="text-sm text-primary font-semibold">{p.price}</div>
                   <div className="mt-3">
-                    <button className="px-4 py-2 rounded-full bg-primary text-white shadow-sm">Explore</button>
+                    <button className="px-4 py-2 rounded-full bg-primary text-white shadow-sm">
+                      Explore
+                    </button>
                   </div>
                 </div>
               </div>

@@ -6,7 +6,8 @@ import type { Product } from "@/data/products";
 
 export function ProductCard3D({ product, index = 0 }: { product: Product; index?: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [style, setStyle] = useState<React.CSSProperties>({});
+  const [transformStyle, setTransformStyle] = useState<React.CSSProperties>({});
+  const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50, opacity: 0 });
 
   const direction = index % 2 === 0 ? -1 : 1;
   const entranceX = direction * (24 + index * 6);
@@ -18,14 +19,30 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    setStyle({
-      transform: `perspective(1100px) rotateY(${px * 16}deg) rotateX(${-py * 16}deg) translateZ(38px) scale(1.03)`,
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    const rotateY = (px - 0.5) * 22;
+    const rotateX = (0.5 - py) * 22;
+
+    setTransformStyle({
+      transform: `perspective(1000px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateZ(28px) scale(1.03)`,
+      transition: "transform 0.1s ease-out",
+    });
+
+    setGlarePosition({
+      x: px * 100,
+      y: py * 100,
+      opacity: 0.25,
     });
   };
 
-  const reset = () => setStyle({ transform: "perspective(1100px) rotateY(0) rotateX(0)" });
+  const reset = () => {
+    setTransformStyle({
+      transform: "perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(0px) scale(1)",
+      transition: "transform 0.5s ease-out",
+    });
+    setGlarePosition((prev) => ({ ...prev, opacity: 0 }));
+  };
 
   return (
     <motion.div
@@ -33,8 +50,7 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
       whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.11 }}
-      whileHover={{ y: -10, scale: 1.015 }}
-
+      whileHover={{ y: -8 }}
       style={{ perspective: "1200px" }}
       className="h-full w-full max-w-full overflow-hidden"
     >
@@ -42,10 +58,20 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
         ref={ref}
         onMouseMove={onMove}
         onMouseLeave={reset}
-        style={style}
-        className="tilt-3d group glass-panel relative h-full w-full max-w-full overflow-hidden rounded-2xl sm:rounded-[28px] p-2.5 sm:p-5 hover:glow-ring"
+        style={transformStyle}
+        className="tilt-3d group glass-panel relative h-full w-full max-w-full overflow-hidden rounded-2xl sm:rounded-[28px] p-2.5 sm:p-5 border border-primary/20 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-colors"
       >
+        {/* Dynamic 3D Glare Light Reflection */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-[28px] transition-opacity duration-300 z-20"
+          style={{
+            background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.35) 0%, rgba(59,130,246,0.1) 45%, transparent 70%)`,
+            opacity: glarePosition.opacity,
+          }}
+        />
+
         <div className="pointer-events-none absolute inset-0 scene-vignette opacity-60" />
+
         <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-3xl bg-brand-deep">
           <img
             src={product.image}
@@ -54,7 +80,7 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
             height={1024}
             loading="lazy"
             className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
-            style={{ transform: "translateZ(40px)" }}
+            style={{ transform: "translateZ(30px)" }}
           />
           <img
             src="/images/logo.png"
@@ -83,10 +109,10 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
         <Link
           to="/products/$slug"
           params={{ slug: product.slug }}
-          className="relative mt-3 sm:mt-6 inline-flex w-full items-center justify-between rounded-xl sm:rounded-2xl border border-border bg-secondary/40 px-2.5 py-1.5 sm:px-5 sm:py-3 text-[10px] sm:text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/15"
+          className="relative mt-3 sm:mt-6 inline-flex w-full items-center justify-between rounded-xl sm:rounded-2xl border border-border bg-secondary/40 px-2.5 py-1.5 sm:px-5 sm:py-3 text-[10px] sm:text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/20"
         >
-          <span>Explore</span>
-          <ArrowUpRight className="size-3 sm:size-4 text-primary transition-transform duration-300 group-hover:translate-x-1" />
+          <span>Explore 3D Details</span>
+          <ArrowUpRight className="size-3 sm:size-4 text-primary transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
         </Link>
       </div>
     </motion.div>

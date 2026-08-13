@@ -26,14 +26,33 @@ function Starfield({ count = 800 }: { count?: number }) {
   return (
     <points>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" array={points} count={points.length / 3} itemSize={3} />
+        <bufferAttribute
+          attach="attributes-position"
+          array={points}
+          count={points.length / 3}
+          itemSize={3}
+        />
       </bufferGeometry>
-      <pointsMaterial color="#A8D8FF" size={0.6} sizeAttenuation depthWrite={false} opacity={0.9} transparent />
+      <pointsMaterial
+        color="#A8D8FF"
+        size={0.6}
+        sizeAttenuation
+        depthWrite={false}
+        opacity={0.9}
+        transparent
+      />
     </points>
   );
 }
 
-function GlassCard({ index, position, rotation, texture }: any) {
+interface GlassCardProps {
+  index: number;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  texture: string;
+}
+
+function GlassCard({ index, position, rotation, texture }: GlassCardProps) {
   const cardRef = useRef<THREE.Group>(null);
   const imgTex = useLoader(THREE.TextureLoader, texture);
 
@@ -60,36 +79,54 @@ function GlassCard({ index, position, rotation, texture }: any) {
       </RoundedBox>
 
       {/* Product platform (slightly above the card) */}
-      <group position={[0, 0.45, 0.28]}> 
+      <group position={[0, 0.45, 0.28]}>
         {/* simple reflective pedestal */}
-        <mesh position={[0, -0.25, 0]}> 
+        <mesh position={[0, -0.25, 0]}>
           <cylinderGeometry args={[0.26, 0.36, 0.12, 32]} />
           <meshStandardMaterial color="#0B0F17" metalness={0.6} roughness={0.25} />
         </mesh>
 
         {/* use the product image as a front-facing plane to stand in as the model */}
-        <mesh position={[0, 0.15, 0.28]} rotation={[0, 0, 0]}> 
+        <mesh position={[0, 0.15, 0.28]} rotation={[0, 0, 0]}>
           <boxGeometry args={[1.5, 1.1, 0.28]} />
           <meshPhysicalMaterial map={imgTex} metalness={0.15} roughness={0.3} />
         </mesh>
       </group>
 
       {/* embedded 3D label text on the card */}
-      <Text position={[-1.62, -0.62, 0.11]} fontSize={0.18} color="#FFFFFF" anchorX="left" anchorY="middle">
+      <Text
+        position={[-1.62, -0.62, 0.11]}
+        fontSize={0.18}
+        color="#FFFFFF"
+        anchorX="left"
+        anchorY="middle"
+      >
         {products[index].name}
       </Text>
 
       {/* price */}
-      <Text position={[1.62, -0.62, 0.11]} fontSize={0.14} color="#A8CFFD" anchorX="right" anchorY="middle">
+      <Text
+        position={[1.62, -0.62, 0.11]}
+        fontSize={0.14}
+        color="#A8CFFD"
+        anchorX="right"
+        anchorY="middle"
+      >
         {products[index].price}
       </Text>
 
       {/* Explore button rendered as a small rounded plate */}
-      <mesh position={[0, -0.9, 0.12]}> 
+      <mesh position={[0, -0.9, 0.12]}>
         <boxGeometry args={[1.2, 0.36, 0.06]} />
         <meshPhysicalMaterial color="#3B82F6" metalness={0.6} roughness={0.15} />
       </mesh>
-      <Text position={[0, -0.9, 0.17]} fontSize={0.12} color="#FFFFFF" anchorX="center" anchorY="middle">
+      <Text
+        position={[0, -0.9, 0.17]}
+        fontSize={0.12}
+        color="#FFFFFF"
+        anchorX="center"
+        anchorY="middle"
+      >
         Explore
       </Text>
     </group>
@@ -146,24 +183,39 @@ export default function CollectionShowcase() {
 
         <group position={[0, 0.3, 0]}>
           {products.slice(0, 4).map((p, i) => (
-            <GlassCard key={p.slug} index={i} position={positions[i]} rotation={[0, (i / 4) * Math.PI * 2, 0]} texture={p.image} />
+            <GlassCard
+              key={p.slug}
+              index={i}
+              position={positions[i]}
+              rotation={[0, (i / 4) * Math.PI * 2, 0]}
+              texture={p.image}
+            />
           ))}
         </group>
 
         <Environment preset="sunset" />
-        <OrbitControls enablePan={false} enableZoom={true} maxPolarAngle={Math.PI * 0.49} minPolarAngle={Math.PI * 0.2} />
+        <OrbitControls
+          enablePan={false}
+          enableZoom={true}
+          maxPolarAngle={Math.PI * 0.49}
+          minPolarAngle={Math.PI * 0.2}
+        />
       </Canvas>
 
       {/* top UI overlays in HTML so text is crisp and accessible */}
       <div className="absolute inset-x-0 top-12 z-60 flex flex-col items-center pointer-events-none">
         <div className="text-center max-w-3xl px-4">
           <div className="text-sm tracking-wider text-primary uppercase">The Collection</div>
-          <h1 className="mt-3 text-3xl md:text-5xl font-semibold text-white">Four objects. Zero compromise.</h1>
+          <h1 className="mt-3 text-3xl md:text-5xl font-semibold text-white">
+            Four objects. Zero compromise.
+          </h1>
         </div>
       </div>
 
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-60 pointer-events-auto">
-        <button className="bg-primary text-white px-6 py-3 rounded-full shadow-lg">Explore the collection</button>
+        <button className="bg-primary text-white px-6 py-3 rounded-full shadow-lg">
+          Explore the collection
+        </button>
       </div>
     </div>
   );

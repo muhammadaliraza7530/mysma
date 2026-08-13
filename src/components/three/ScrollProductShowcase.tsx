@@ -6,7 +6,13 @@ import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
 import { products } from "@/data/products";
 
-function ProductModel({ groupRef, cutout }: { groupRef: React.RefObject<THREE.Group | null>; cutout: string }) {
+function ProductModel({
+  groupRef,
+  cutout,
+}: {
+  groupRef: React.RefObject<THREE.Group | null>;
+  cutout: string;
+}) {
   const texture = useLoader(THREE.TextureLoader, cutout);
 
   return (
@@ -182,7 +188,8 @@ export function ScrollProductShowcase() {
       const tiltY = hoverRef.current ? pointerTilt.current.y : 0;
       const tiltX = hoverRef.current ? pointerTilt.current.x : 0;
       const desiredRy = -angle + tiltY;
-      groupRef.current.rotation.y += (desiredRy - groupRef.current.rotation.y) * Math.min(4 * delta, 1);
+      groupRef.current.rotation.y +=
+        (desiredRy - groupRef.current.rotation.y) * Math.min(4 * delta, 1);
       groupRef.current.rotation.x += (tiltX - groupRef.current.rotation.x) * Math.min(6 * delta, 1);
 
       // depth factor: 1 when facing camera, 0 when at back
@@ -193,21 +200,23 @@ export function ScrollProductShowcase() {
       groupRef.current.scale.y = groupRef.current.scale.x;
 
       // set opacity on child materials to simulate depth/blur
-      groupRef.current.traverse((child: any) => {
-        if (child.isMesh && child.material) {
-          if (!Array.isArray(child.material)) {
-            child.material.transparent = true;
+      groupRef.current.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          if (mesh.material && !Array.isArray(mesh.material)) {
+            const mat = mesh.material as THREE.Material;
+            mat.transparent = true;
             const targetOpacity = 0.35 + 0.65 * facing; // 0.35 .. 1
             const hoverBoost = hoverRef.current ? 0.12 : 0;
-            child.material.opacity += (targetOpacity + hoverBoost - child.material.opacity) * Math.min(10 * delta, 1);
-            child.material.needsUpdate = true;
+            mat.opacity += (targetOpacity + hoverBoost - mat.opacity) * Math.min(10 * delta, 1);
+            mat.needsUpdate = true;
           }
         }
       });
     });
 
     // pointer handlers for tilt effect
-    const onPointerMove = (e: any) => {
+    const onPointerMove = (e: React.PointerEvent | PointerEvent) => {
       const nx = (e.clientX / window.innerWidth - 0.5) * 2; // -1..1
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
       // tilt values in radians
@@ -226,7 +235,12 @@ export function ScrollProductShowcase() {
     };
 
     return (
-      <group ref={groupRef} onPointerMove={onPointerMove} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave}>
+      <group
+        ref={groupRef}
+        onPointerMove={onPointerMove}
+        onPointerEnter={onPointerEnter}
+        onPointerLeave={onPointerLeave}
+      >
         <ProductModel groupRef={groupRef} cutout={cutout} />
       </group>
     );
@@ -238,13 +252,23 @@ export function ScrollProductShowcase() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(67,208,255,0.18),transparent_48%)]" />
 
         <div className="pointer-events-none absolute inset-x-0 top-14 z-10 mx-auto max-w-3xl px-5 text-center">
-          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">Scroll system</span>
+          <span className="text-[10px] tracking-[0.38em] text-primary uppercase">
+            Scroll system
+          </span>
           <h2 className="mt-4 text-4xl font-semibold md:text-6xl">Move with the product.</h2>
         </div>
 
         <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <div ref={containerRef} className="w-[min(86vw,420px)] max-w-[420px] aspect-square rounded-full overflow-hidden bg-transparent shadow-2xl md:w-full md:max-w-none md:aspect-auto md:rounded-none">
-            <Canvas className="w-full h-full" camera={{ position: [0, 0.55, 5.8], fov: 38 }} shadows dpr={[1, 1.8]}>
+          <div
+            ref={containerRef}
+            className="w-[min(86vw,420px)] max-w-[420px] aspect-square rounded-full overflow-hidden bg-transparent shadow-2xl md:w-full md:max-w-none md:aspect-auto md:rounded-none"
+          >
+            <Canvas
+              className="w-full h-full"
+              camera={{ position: [0, 0.55, 5.8], fov: 38 }}
+              shadows
+              dpr={[1, 1.8]}
+            >
               <color attach="background" args={["#050816"]} />
               <fog attach="fog" args={["#050816", 6, 14]} />
               <ambientLight intensity={0.9} />
@@ -262,7 +286,8 @@ export function ScrollProductShowcase() {
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 mx-auto max-w-2xl px-5 text-center text-sm text-muted-foreground md:text-base">
-          A fluid product reveal that rotates with the scroll while the camera glides between reveal states.
+          A fluid product reveal that rotates with the scroll while the camera glides between reveal
+          states.
         </div>
       </div>
     </section>

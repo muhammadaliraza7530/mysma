@@ -7,9 +7,11 @@ export function use3DEffects() {
 
     const supportsTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
-    function onMove(e: MouseEvent) {
+    function onMove(e: PointerEvent | MouseEvent) {
       // target common 3D card classes used across the project
-      const el = (e.target as HTMLElement)?.closest?.(".tilt-card, .card-3d, .glass-card") as HTMLElement | null;
+      const el = (e.target as HTMLElement)?.closest?.(
+        ".tilt-card, .card-3d, .glass-card",
+      ) as HTMLElement | null;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const px = (e.clientX - rect.left) / rect.width;
@@ -22,8 +24,10 @@ export function use3DEffects() {
       el.classList.add("is-hovered");
     }
 
-    function onLeave(e: MouseEvent) {
-      const el = (e.target as HTMLElement)?.closest?.(".tilt-card, .card-3d, .glass-card") as HTMLElement | null;
+    function onLeave(e: PointerEvent | MouseEvent) {
+      const el = (e.target as HTMLElement)?.closest?.(
+        ".tilt-card, .card-3d, .glass-card",
+      ) as HTMLElement | null;
       if (!el) return;
       el.style.setProperty("--card-tilt-x", `0deg`);
       el.style.setProperty("--card-tilt-y", `0deg`);
@@ -32,15 +36,15 @@ export function use3DEffects() {
     }
 
     if (!supportsTouch) {
-      window.addEventListener("pointermove", onMove, { passive: true });
-      window.addEventListener("pointerout", onLeave);
-      window.addEventListener("pointerleave", onLeave);
+      window.addEventListener("pointermove", onMove as EventListener, { passive: true });
+      window.addEventListener("pointerout", onLeave as EventListener);
+      window.addEventListener("pointerleave", onLeave as EventListener);
     }
 
     return () => {
-      window.removeEventListener("pointermove", onMove as any);
-      window.removeEventListener("pointerout", onLeave as any);
-      window.removeEventListener("pointerleave", onLeave as any);
+      window.removeEventListener("pointermove", onMove as EventListener);
+      window.removeEventListener("pointerout", onLeave as EventListener);
+      window.removeEventListener("pointerleave", onLeave as EventListener);
     };
   }, []);
 }

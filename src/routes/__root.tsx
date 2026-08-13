@@ -142,7 +142,7 @@ function RootComponent() {
         <div className="relative w-full max-w-[100vw] overflow-x-hidden">
           <SiteNav />
           {/* Required: nested routes render here. Wrapping with PageTransition adds page fade/scale */}
-          <PageTransition locationKey={(location as any)?.pathname ?? "page"}>
+          <PageTransition locationKey={location.pathname ?? "page"}>
             <Outlet />
           </PageTransition>
           <SiteFooter />
