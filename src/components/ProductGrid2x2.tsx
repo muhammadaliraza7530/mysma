@@ -4,6 +4,7 @@ import { Plus, Minus, ShoppingCart, Zap, Check } from "lucide-react";
 import { products, Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { ScrollTilt3D } from "@/components/ScrollTilt3D";
 
 export function ProductGrid2x2() {
   return (
@@ -22,11 +23,11 @@ export function ProductGrid2x2() {
         </div>
       </ScrollReveal>
 
-      <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4 w-full max-w-full overflow-hidden">
+      <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-4 w-full max-w-full [perspective:1600px] [transform-style:preserve-3d]">
         {products.map((product, idx) => (
-          <ScrollReveal key={product.slug} delay={idx * 0.12} direction="up" distance={30}>
+          <ScrollTilt3D key={product.slug} index={idx}>
             <ProductGridCard product={product} />
-          </ScrollReveal>
+          </ScrollTilt3D>
         ))}
       </div>
     </section>

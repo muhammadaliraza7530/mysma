@@ -34,16 +34,7 @@ export function ProductCard3D({ product, index = 0 }: { product: Product; index?
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.11 }}
       whileHover={{ y: -10, scale: 1.015 }}
-      animate={{
-        y: [0, -8, 0],
-        rotate: [baseRotate, baseRotate + 1.4, baseRotate],
-      }}
-      transition={{
-        duration: 5.6 + (index % 3) * 0.8,
-        repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
-        delay: index * 0.25,
-      }}
+
       style={{ perspective: "1200px" }}
       className="h-full w-full max-w-full overflow-hidden"
     >
