@@ -1,238 +1,208 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { lazy, useState } from "react";
-import {
-  ArrowLeft,
-  Check,
-  RotateCw,
-  Plus,
-  Minus,
-  ShoppingCart,
-  Zap,
-  Sparkles,
-  Video,
-} from "lucide-react";
-import { getProduct, products, type Product } from "@/data/products";
-import { ClientOnly, useIsMobile } from "@/components/ClientOnly";
-import { useCart } from "@/context/CartContext";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { ScrollTilt3D } from "@/components/ScrollTilt3D";
-import { ProductCard3D } from "@/components/ProductCard3D";
-
-const ProductViewer = lazy(() => import("@/components/three/ProductViewer"));
+import { Watermark } from "@/components/Watermark";
+import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { Check, Download, ShoppingCart, Sparkles } from "lucide-react";
+import { GalleryRail } from "@/components/GalleryRail";
+import { ProductRail } from "@/components/ProductRail";
+import { ProductVideo } from "@/components/ProductVideo";
+import { QtyStepper } from "@/components/QtyStepper";
+import { Reveal } from "@/components/Reveal";
+import { getProduct } from "@/data/products";
+import { useCatalog } from "@/context/CatalogContext";
+import { useCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: ({ params }) => {
-    const product = getProduct(params.slug);
-    if (!product) throw notFound();
-    return { product };
-  },
-  head: ({ loaderData }) => {
-    if (!loaderData) {
-      return {
-        meta: [
-          { title: "Product not found — My Small Things" },
-          { name: "robots", content: "noindex" },
-        ],
-      };
-    }
-    const p = loaderData.product;
-    return {
-      meta: [
-        { title: `${p.name} — My Small Things` },
-        { name: "description", content: `${p.tagline}. ${p.short}. ${p.price}.` },
-        { property: "og:title", content: `${p.name} — My Small Things` },
-        { property: "og:description", content: p.tagline },
-      ],
-    };
-  },
-  component: ProductPage,
+  loader: ({ params }) => getProduct(params.slug) ?? null,
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [
+          { title: `${loaderData.name} | My Small Things by Mishel` },
+          { name: "description", content: loaderData.description.slice(0, 155) },
+          { property: "og:title", content: `${loaderData.name} | My Small Things` },
+          { property: "og:description", content: loaderData.tagline },
+           { property: "og:type", content: "website" },
+           { name: "twitter:card", content: "summary_large_image" },
+        ]
+      : [],
+  }),
+  component: ProductDetail,
 });
 
-function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: Product };
-  const mobile = useIsMobile();
-  const [quantity, setQuantity] = useState(1);
-  const { addToCart, buyNow } = useCart();
+function ProductDetail() {
+  const { slug } = Route.useParams();
+  // Remount on slug change so image/qty state never carries over between products.
+  return <ProductDetailView key={slug} />;
+}
+
+function ProductDetailView() {
+  const seedProduct = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const { getBySlug, products } = useCatalog();
+  const product = getBySlug(slug) ?? seedProduct;
+  const { add, setOpen } = useCart();
+  const [qty, setQty] = useState(1);
+  const initialImage = product?.gallery?.[0] ?? product?.image ?? "";
+  const [activeImage, setActiveImage] = useState(initialImage);
+  if (!product) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center px-4 pt-24 text-center">
+        <div>
+          <h1 className="text-3xl font-semibold">This product is no longer available</h1>
+          <Link to="/products" className="mt-6 inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground">
+            View all products
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  const gallery = product.gallery?.length ? product.gallery : [product.image];
+  const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+
 
   return (
-    <div className="pt-28 w-full max-w-[100vw] overflow-x-hidden">
-      <div className="mx-auto max-w-7xl px-5">
-        <Link
-          to="/products"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" /> Back to collection
-        </Link>
+    <div className="pt-24 pb-24 sm:pt-32">
+      <div className="mx-auto grid min-w-0 max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+        {/* Hero product */}
+        <Reveal>
+          <div className="glass-card relative aspect-[4/3] w-full min-w-0 overflow-hidden rounded-3xl select-none sm:aspect-square">
+            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,color-mix(in_oklab,var(--primary)_18%,transparent),transparent_70%)]" />
+            <motion.img
+              key={activeImage}
+              src={activeImage}
+              alt={product.name}
+              draggable={false}
+              className="product-float pointer-events-none absolute inset-0 size-full object-contain p-5 sm:p-12"
+              initial={{ opacity: 0, scale: 1.04, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <Watermark />
+          </div>
+
+          {/* Gallery rail */}
+          {gallery.length > 1 ? (
+            <div className="mt-5 min-w-0 max-w-full">
+              <GalleryRail
+                images={gallery}
+                name={product.name}
+                activeSrc={activeImage}
+                onSelect={setActiveImage}
+              />
+            </div>
+          ) : null}
+
+        </Reveal>
+
+
+
+        {/* Info */}
+        <Reveal delay={0.1}>
+          <span className="eyebrow text-primary">{product.eyebrow}</span>
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">{product.name}</h1>
+          <p className="mt-5 text-sm text-muted-foreground sm:text-base">{product.description}</p>
+
+          <ul className="mt-6 space-y-2">
+            {product.features.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8 flex items-center gap-4">
+            <span className="eyebrow text-muted-foreground">Quantity</span>
+            <QtyStepper value={qty} onChange={setQty} size="md" />
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                add(product.slug, qty);
+                setOpen(true);
+              }}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground glow-ring transition-transform hover:scale-[1.03]"
+            >
+              <ShoppingCart className="size-4" /> Add to Cart
+            </button>
+          </div>
+
+        </Reveal>
       </div>
 
-      <section className="relative mx-auto mt-8 grid max-w-7xl gap-12 px-5 md:grid-cols-2 md:items-center">
-        <div className="pointer-events-none absolute inset-0 scene-vignette" />
-        <ScrollReveal direction="left" distance={40}>
-          <div className="relative h-[54vh] min-h-[340px] w-full">
-            <ClientOnly
-              fallback={
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  width={1024}
-                  height={1024}
-                  className="size-full rounded-[32px] object-cover"
-                />
-              }
-            >
-              <ProductViewer url={product.image} mobile={mobile} />
-            </ClientOnly>
-            <p className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 text-xs tracking-widest text-muted-foreground uppercase">
-              <RotateCw className="size-3" /> Drag for 360° view
+      {/* Video */}
+      {product.video ? (
+        <section className="mx-auto mt-20 max-w-5xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+              <Sparkles className="size-5 text-primary" /> See it in action
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Real product footage — tap the speaker icon for sound.
             </p>
+          </Reveal>
+          <div className="mt-8">
+            <ProductVideo src={product.video} poster={product.image} label={`${product.name} video`} />
           </div>
-        </ScrollReveal>
+        </section>
+      ) : null}
 
-        <ScrollReveal direction="right" distance={40} delay={0.15}>
-          <div className="relative">
-            <span className="text-xs tracking-[0.3em] text-primary uppercase">{product.short}</span>
-            <h1 className="mt-4 text-4xl font-semibold md:text-6xl">{product.name}</h1>
-            <p className="mt-4 text-muted-foreground">{product.description}</p>
-            <p className="mt-7 text-3xl font-semibold text-gradient">{product.price}</p>
-
-            <ul className="mt-7 space-y-3">
-              {product.highlights.map((h) => (
-                <li key={h} className="flex items-start gap-3 text-sm">
-                  <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                  {h}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 flex items-center gap-4">
-              <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                Quantity
-              </span>
-              <div className="flex items-center rounded-full border border-border bg-card/80 p-1">
-                <button
-                  onClick={() => setQuantity((q) => (q > 1 ? q - 1 : 1))}
-                  className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="size-4" />
-                </button>
-                <span className="w-8 text-center text-sm font-bold text-foreground">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="size-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button
-                onClick={() => buyNow(product, quantity)}
-                className="flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-1 hover:glow-ring"
+      {product.slug === "electronic-badge" ? (
+        <section className="mx-auto mt-20 max-w-5xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="glass-card rounded-3xl p-8 text-center sm:p-12">
+              <h2 className="text-2xl font-semibold tracking-tight">Electronic Badge brochure</h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+                Full product catalogue, specifications and usage guide.
+              </p>
+              <a
+                href="/api/public/brochure"
+                download="mysmallthings-brochure.pdf"
+                className="group mt-8 inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-primary px-8 py-5 text-base font-semibold text-primary-foreground glow-ring transition-transform hover:scale-[1.02] sm:w-auto sm:text-lg"
               >
-                <Zap className="size-4" />
-                Buy Now
-              </button>
-              <button
-                onClick={() => addToCart(product, quantity)}
-                className="flex items-center justify-center gap-2 rounded-full border border-border px-8 py-4 text-sm font-medium transition-all duration-300 hover:-translate-y-1 hover:border-primary/60"
-              >
-                <ShoppingCart className="size-4 text-primary" />
-                Add to cart
-              </button>
+                <Download className="size-5 transition-transform group-hover:translate-y-0.5" />
+                Download Brochure
+              </a>
             </div>
-          </div>
-        </ScrollReveal>
-      </section>
+          </Reveal>
+        </section>
+      ) : null}
 
-      <section className="mx-auto max-w-7xl px-5 py-20">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 [perspective:1200px]">
-          {product.specs.map((s, idx) => (
-            <ScrollTilt3D key={s.label} index={idx}>
-              <div className="glass-panel rounded-3xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 hover:glow-ring">
-                <p className="text-xs tracking-widest text-primary font-semibold uppercase">
-                  {s.label}
-                </p>
-                <p className="mt-2 text-2xl font-bold text-foreground">{s.value}</p>
+      {/* Specs */}
+      <section className="mx-auto mt-20 min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            <Sparkles className="size-5 text-primary" /> Product Feature Details
+          </h2>
+        </Reveal>
+        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {product.specs.map((s, i) => (
+            <Reveal key={s.label} delay={i * 0.07}>
+              <div className="glass-card rounded-2xl p-5">
+                <p className="eyebrow text-primary">{s.label}</p>
+                <p className="mt-2 text-lg font-semibold">{s.value}</p>
               </div>
-            </ScrollTilt3D>
+            </Reveal>
           ))}
         </div>
-
-        {/* Additional Product Feature Images Grid */}
-        {product.gallery && product.gallery.length > 0 && (
-          <div className="mt-16">
-            <h2 className="mb-6 text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-              <Sparkles className="size-4 text-primary" /> Product Feature Details
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [perspective:1400px]">
-              {product.gallery.map((g, idx) => (
-                <ScrollTilt3D key={g} index={idx}>
-                  <div className="bg-[#0c1425] border border-slate-800 rounded-3xl p-3 overflow-hidden shadow-xl relative group transition-all duration-300 hover:border-primary/50">
-                    <img
-                      src={g}
-                      alt={`${product.name} detail ${idx + 1}`}
-                      width={1024}
-                      height={1024}
-                      loading="lazy"
-                      className="w-full h-auto object-cover rounded-2xl transition-transform duration-500 group-hover:scale-[1.02]"
-                    />
-                    <img
-                      src="/images/logo.png"
-                      alt=""
-                      aria-hidden
-                      width={200}
-                      height={60}
-                      loading="lazy"
-                      className="pointer-events-none absolute bottom-5 right-5 h-5 w-auto opacity-70 mix-blend-screen"
-                    />
-                  </div>
-                </ScrollTilt3D>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Video Container at the End */}
-        <div className="mt-16">
-          <h2 className="mb-6 text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-            <Video className="size-5 text-primary" /> Product Video
-          </h2>
-          <div className="rounded-3xl border border-slate-800 bg-[#0c1425] p-3 shadow-xl">
-            <video
-              controls
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-auto object-contain rounded-2xl"
-            >
-              <source src={product.video || "/images/shoeVideo.mp4"} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-24">
-        <ScrollReveal direction="up">
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-4 text-primary" />
-            <h2 className="text-2xl font-bold text-foreground">More Small Things</h2>
-          </div>
-        </ScrollReveal>
-        <div className="mt-6 grid gap-5 sm:grid-cols-3 [perspective:1400px]">
-          {products
-            .filter((p) => p.slug !== product.slug)
-            .map((p, idx) => (
-              <ScrollTilt3D key={p.slug} index={idx}>
-                <ProductCard3D product={p} index={idx} />
-              </ScrollTilt3D>
-            ))}
+      {/* Related */}
+      <section className="mx-auto mt-20 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <h2 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+            <Sparkles className="size-5 text-primary" /> More Small Things
+          </h2>
+        </Reveal>
+        <div className="mt-8">
+          <ProductRail products={related} />
+        </div>
+        <div className="mt-10">
+          <Link to="/products" className="text-sm text-primary hover:underline">
+            View the full collection →
+          </Link>
         </div>
       </section>
     </div>

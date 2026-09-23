@@ -1,203 +1,237 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy } from "react";
-import { ArrowRight, Sparkles, ShieldCheck, Truck, Cpu } from "lucide-react";
-import { products } from "@/data/products";
-import { ClientOnly, useIsMobile } from "@/components/ClientOnly";
-import { ProductCard3D } from "@/components/ProductCard3D";
-import { ProductGrid2x2 } from "@/components/ProductGrid2x2";
-import { CircularProductOrbit } from "@/components/CircularProductOrbit";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { ScrollTilt3D } from "@/components/ScrollTilt3D";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Rocket,
+  ShieldCheck,
+  Sparkles,
+  Thermometer,
+} from "lucide-react";
 
-const HeroScene = lazy(() => import("@/components/three/HeroScene"));
+import { GlowCard } from "@/components/GlowCard";
+import { Marquee } from "@/components/Marquee";
+import { Hero3D } from "@/components/Hero3D";
+import { OrbitCarousel } from "@/components/OrbitCarousel";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductVideo } from "@/components/ProductVideo";
+import { Reveal } from "@/components/Reveal";
+import { Starfield } from "@/components/Starfield";
+import { FAQ } from "@/components/FAQ";
+import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
+import { useCatalog } from "@/context/CatalogContext";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "My Small Things — Small Things. Big Impact." },
+      { title: "My Small Things by Mishel | Luxury Compact Tech" },
       {
         name: "description",
         content:
-          "Luxury compact tech: mini washing machine, shoe washer, precision blower and electronic badge. Cinematic 3D shopping experience.",
+          "Small Things. Big Impact. Four compact machines — Mini washing machine, Mini shoe washer, Mini washing machine Grey and Electronic Badge — engineered with flagship obsession.",
       },
-      { property: "og:title", content: "My Small Things — Small Things. Big Impact." },
+      { property: "og:title", content: "My Small Things by Mishel | Luxury Compact Tech" },
       {
         property: "og:description",
-        content: "Four compact machines, engineered like flagship tech. Explore the 3D collection.",
+        content: "Four compact machines engineered with flagship obsession. Explore in full 3D.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,
 });
 
+const PANEL_FEATURES = [
+  { icon: Sparkles, title: "Smart programs", copy: "Auto-tuned cycles for every fabric" },
+  { icon: ShieldCheck, title: "Child safety", copy: "Instant stop on door open" },
+  { icon: Thermometer, title: "Sterilise", copy: "High-temperature deep clean" },
+  { icon: Rocket, title: "Fast delivery", copy: "Shipped nationwide in 48h" },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Ayesha K.",
+    role: "Karachi",
+    quote:
+      "It looks like a piece of art on my shelf and cleans better than machines three times its size.",
+  },
+  {
+    name: "Hamza R.",
+    role: "Lahore",
+    quote: "The Mini shoe washer saved my collection. Quiet, quick and genuinely premium build.",
+  },
+  {
+    name: "Sana M.",
+    role: "Islamabad",
+    quote: "Ordered on Monday, delivered Wednesday. Packaging alone felt like a flagship product.",
+  },
+  {
+    name: "Bilal A.",
+    role: "Rawalpindi",
+    quote: "The grey Mini washing machine looks stunning on my counter — quiet and spotless every cycle.",
+  },
+];
+
 function Home() {
-  const mobile = useIsMobile();
-
+  const { products } = useCatalog();
+  const { settings } = useSiteSettings();
   return (
-    <div className="w-full max-w-[100vw] overflow-x-hidden">
-      {/* HERO */}
-      <section className="relative min-h-[100svh] w-full max-w-[100vw] overflow-hidden">
-        <div className="absolute inset-0 scene-vignette" />
-        <div className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(ellipse_55%_34%_at_50%_52%,color-mix(in_oklab,var(--background)_88%,transparent)_30%,transparent_72%)]" />
-        <div className="absolute inset-0">
-          <ClientOnly>
-            <HeroScene key={mobile ? "m" : "d"} mobile={mobile} />
-          </ClientOnly>
-        </div>
+    <div>
+      <Hero3D />
 
-        <div className="pointer-events-none relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-4 sm:px-5 text-center">
-          <ScrollReveal direction="down" delay={0.1}>
-            <span className="glass-panel rounded-full px-4 py-1.5 text-[11px] tracking-[0.28em] text-primary uppercase">
-              Luxury compact tech
+      <Marquee />
+
+      {/* ORBIT */}
+      <section id="orbit" className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="text-center">
+            <span className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-1.5 eyebrow text-primary">
+              <Sparkles className="size-3" /> 3D orbit
             </span>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.2}>
-            <h1 className="mt-6 text-[13vw] leading-[1.15] sm:leading-[1.12] md:leading-[1.1] font-semibold md:text-[7rem] pb-2 sm:pb-4">
-              <span className="block pb-1">My Small</span>
-              <span className="text-gradient inline-block pb-3 sm:pb-4 pt-1">Things</span>
-            </h1>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.35}>
-            <p className="mt-5 max-w-md text-base text-muted-foreground md:max-w-xl md:text-lg">
-              Small Things. Big Impact. Four machines, engineered with flagship obsession —
-              floating, rotating and ready to be explored in full 3D.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.5}>
-            <div className="pointer-events-auto mt-9 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                to="/products"
-                className="group relative inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-1 hover:glow-ring"
-              >
-                Explore the collection
-                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                to="/products"
-                className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3.5 text-sm font-medium transition-all duration-300 hover:-translate-y-1 hover:border-primary/60"
-              >
-                See all products
-              </Link>
-            </div>
-          </ScrollReveal>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
-      </section>
-
-      {/* MARQUEE */}
-      <div className="relative w-full max-w-[100vw] overflow-hidden border-y border-border/60 py-4">
-        <div className="marquee-track flex w-max gap-12 text-sm tracking-[0.3em] text-muted-foreground uppercase">
-          {Array.from({ length: 2 }).map((_, k) => (
-            <div key={k} className="flex gap-12">
-              {[
-                "Small Things. Big Impact.",
-                "Cinematic engineering",
-                "1-year warranty",
-                "Nationwide delivery",
-                "Quiet by design",
-                "Premium materials",
-              ].map((t) => (
-                <span key={t} className="flex items-center gap-12">
-                  {t} <Sparkles className="size-3 text-primary" />
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* CIRCULAR 3D PRODUCT ORBIT (4 PRODUCTS MOVING IN A CIRCLE) */}
-      <CircularProductOrbit />
-
-      {/* 2X2 PRODUCT GRID SECTION */}
-      <ProductGrid2x2 />
-
-      {/* FEATURE SPLIT */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-5 py-16 md:py-28 overflow-hidden">
-        <div className="grid items-center gap-10 md:gap-14 md:grid-cols-2">
-          <ScrollReveal direction="left" distance={40}>
-            <div className="relative">
-              <div className="glass-panel relative overflow-hidden rounded-[28px] sm:rounded-[36px] p-3 sm:p-4 float-slow">
-                <img
-                  src="/images/washer-panel.jpg"
-                  alt="Smart Sky Panel control interface"
-                  width={1024}
-                  height={1024}
-                  loading="lazy"
-                  className="w-full rounded-2xl sm:rounded-3xl object-cover"
-                />
-                <img
-                  src="/images/logo.png"
-                  alt=""
-                  aria-hidden
-                  width={220}
-                  height={66}
-                  loading="lazy"
-                  className="pointer-events-none absolute bottom-4 right-4 sm:bottom-7 sm:right-7 h-5 sm:h-7 w-auto opacity-70 mix-blend-screen"
-                />
-              </div>
-              <div className="spin-ring pointer-events-none absolute -inset-2 sm:-inset-8 -z-10 rounded-full border border-primary/20" />
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal direction="right" distance={40} delay={0.15}>
-            <div>
-              <span className="text-xs tracking-[0.3em] text-primary uppercase">
-                Smart Sky Panel
-              </span>
-              <h2 className="mt-4 text-3xl font-semibold sm:text-4xl md:text-5xl leading-tight">
-                One tap.{" "}
-                <span className="text-gradient inline-block pb-1 sm:pb-2">Everything handled.</span>
-              </h2>
-              <p className="mt-4 text-sm text-muted-foreground md:text-base">
-                A glass command surface with constellation lighting, eight intelligent programs and
-                a child lock that halts the drum the instant the door opens.
-              </p>
-              <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-4 sm:grid-cols-2">
-                {[
-                  { icon: Cpu, t: "Smart programs", d: "Auto-tuned cycles for every fabric" },
-                  { icon: ShieldCheck, t: "Child safety", d: "Instant stop on door open" },
-                  { icon: Sparkles, t: "Sterilise", d: "High-temperature deep clean" },
-                  { icon: Truck, t: "Fast delivery", d: "Shipped nationwide in 48h" },
-                ].map((f, idx) => (
-                  <ScrollReveal key={f.t} delay={0.2 + idx * 0.1} direction="up" distance={20}>
-                    <div className="glass-panel rounded-2xl p-4 transition-transform duration-500 hover:-translate-y-1.5">
-                      <f.icon className="size-5 text-primary" />
-                      <p className="mt-3 text-sm font-semibold">{f.t}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{f.d}</p>
-                    </div>
-                  </ScrollReveal>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="relative mx-auto max-w-5xl px-4 sm:px-5 pb-20 sm:pb-28 overflow-hidden">
-        <ScrollReveal direction="up" distance={40}>
-          <div className="glass-panel relative overflow-hidden rounded-[28px] sm:rounded-[40px] px-5 py-12 sm:px-6 sm:py-16 text-center">
-            <div className="pointer-events-none absolute inset-0 scene-vignette" />
-            <h2 className="relative text-3xl font-semibold sm:text-4xl md:text-5xl leading-tight pb-1">
-              Ready for the <span className="text-gradient inline-block pb-1">small upgrade</span>?
+            <h2 className="mt-5 text-2xl font-semibold tracking-tight sm:text-4xl">
+              See them in orbit
             </h2>
-            <p className="relative mx-auto mt-4 max-w-lg text-sm text-muted-foreground sm:text-base">
-              Free delivery, one-year warranty and a support team that actually answers.
+            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
+              A smooth circular carousel of our compact machines.
             </p>
-            <Link
-              to="/products"
-              className="relative mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-1 hover:glow-ring"
-            >
-              Shop My Small Things
-              <ArrowRight className="size-4" />
-            </Link>
+          </Reveal>
+
+          <div className="mt-12">
+            <OrbitCarousel />
           </div>
-        </ScrollReveal>
+        </div>
+      </section>
+
+      <Marquee />
+
+      {/* COLLECTION */}
+      <section id="collection" className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-xl">
+            <span className="eyebrow text-primary">Our Products</span>
+            <h2 className="mt-4 text-2xl font-semibold leading-tight tracking-tight sm:text-4xl">
+              Compact machines.
+              <br className="sm:hidden" /> Zero compromise.
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+              Four premium small devices designed for modern living.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            {products.map((p, i) => (
+              <Reveal key={p.slug} delay={i * 0.18} y={44}>
+                <ProductCard product={p} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <Reveal>
+            <div className="relative mx-auto w-full max-w-[800px]">
+              <ProductVideo
+                src="/videos/shoe-washer.mp4"
+                label="Mini shoe washer in action"
+              />
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <span className="eyebrow text-primary">Our studio</span>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
+              One tap. Everything handled.
+            </h2>
+            <p className="mt-4 text-sm text-muted-foreground sm:text-base">
+              Glass command surfaces, constellation lighting and intelligent programs. We obsess over
+              details most brands skip, then shrink the result until it fits on a shelf.
+            </p>
+
+          </Reveal>
+
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-xl">
+            <span className="eyebrow text-primary">Why us</span>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
+              Small size. Flagship build.
+            </h2>
+          </Reveal>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {PANEL_FEATURES.map(({ icon: Icon, title, copy }, i) => (
+              <Reveal key={title} delay={i * 0.07}>
+                <GlowCard className="h-full rounded-3xl p-6">
+                  <Icon className="size-6 text-primary" />
+                  <p className="mt-4 text-base font-semibold">{title}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{copy}</p>
+                </GlowCard>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="overflow-hidden py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="text-center">
+            <span className="eyebrow text-primary">Reviews</span>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
+              Loved across Pakistan
+            </h2>
+          </Reveal>
+          <div className="mt-12">
+            <TestimonialsCarousel items={TESTIMONIALS} />
+          </div>
+        </div>
+      </section>
+
+      <FAQ />
+
+      {/* CONTACT CTA */}
+      <section className="pb-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div
+              className="relative overflow-hidden rounded-3xl border border-border p-10 text-center sm:p-16"
+              style={{ background: "var(--gradient-hero)" }}
+            >
+              <Starfield count={18} />
+              <div className="relative z-10">
+                <BadgeCheck className="mx-auto size-8 text-primary" />
+                <h2 className="mt-5 text-2xl font-semibold tracking-tight sm:text-4xl">
+                  {settings.cta.title} <span className="text-primary">{settings.cta.highlight}</span>?
+                </h2>
+                <p className="mx-auto mt-4 max-w-lg text-sm text-muted-foreground">
+                  {settings.cta.subtitle}
+                </p>
+                <div className="mt-8 flex flex-wrap justify-center gap-3">
+                  <Link
+                    to="/products"
+                    className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground glow-ring transition-transform hover:scale-[1.03]"
+                  >
+                    {settings.cta.button}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="glass-chip inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-medium transition-transform hover:scale-[1.03]"
+                  >
+                    Contact us
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </section>
     </div>
   );

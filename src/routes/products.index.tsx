@@ -1,69 +1,52 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { products } from "@/data/products";
-import { ProductCard3D } from "@/components/ProductCard3D";
-import { ProductGrid2x2 } from "@/components/ProductGrid2x2";
-import { CircularProductOrbit } from "@/components/CircularProductOrbit";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { ScrollTilt3D } from "@/components/ScrollTilt3D";
+import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Reveal";
+import { useCatalog } from "@/context/CatalogContext";
 
 export const Route = createFileRoute("/products/")({
   head: () => ({
     meta: [
-      { title: "Collection — My Small Things" },
+      { title: "All Products | My Small Things by Mishel" },
       {
         name: "description",
         content:
-          "Explore all four My Small Things products in 3D: mini washing machine, shoe washer, precision blower and electronic badge.",
+          "Shop the full My Small Things collection: Mini washing machine, Mini shoe washer, Mini washing machine Grey and Electronic Badge.",
       },
-      { property: "og:title", content: "Collection — My Small Things" },
+      { property: "og:title", content: "All Products | My Small Things by Mishel" },
       {
         property: "og:description",
-        content: "Four compact machines, presented in a cinematic 3D showroom.",
+        content: "Four compact machines. Instant checkout, free nationwide delivery.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ProductsPage,
 });
 
 function ProductsPage() {
+  const { products } = useCatalog();
   return (
-    <div className="pt-28 w-full max-w-[100vw] overflow-x-hidden">
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-5 overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 scene-vignette" />
-        <ScrollReveal direction="up">
-          <div className="relative text-center">
-            <span className="text-xs tracking-[0.3em] text-primary uppercase">
-              Compact Tech Range
-            </span>
-            <h1 className="mt-4 text-4xl font-semibold sm:text-5xl md:text-7xl leading-tight pb-2">
-              Small things,{" "}
-              <span className="text-gradient inline-block pb-1 sm:pb-2">built big</span>
-            </h1>
-            <p className="mx-auto mt-4 max-w-xl text-xs sm:text-sm md:text-base text-muted-foreground">
-              Every product is presented as an interactive 3D surface. Hover, rotate, and explore in
-              real 3D perspective.
-            </p>
-          </div>
-        </ScrollReveal>
+    <div className="pt-28 pb-24 sm:pt-36">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <Reveal className="max-w-2xl">
+          <span className="eyebrow text-primary">Small Things. Big Impact.</span>
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+            Engineered for the Small Design.
+          </h1>
+          <p className="mt-4 text-sm text-muted-foreground sm:text-base">
+            Select your quantity and order directly with instant checkout.
+          </p>
+        </Reveal>
 
-        {/* 3D CIRCULAR ORBIT SHOWCASE */}
-        <div className="mt-6">
-          <CircularProductOrbit />
-        </div>
-
-        {/* 3D SCROLL CARD GRID */}
-        <div className="relative mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 [perspective:1400px]">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {products.map((p, i) => (
-            <ScrollTilt3D key={p.slug} index={i}>
-              <ProductCard3D product={p} index={i} />
-            </ScrollTilt3D>
+            <Reveal key={p.slug} delay={i * 0.15} y={44}>
+              <ProductCard product={p} />
+            </Reveal>
           ))}
         </div>
-      </section>
-
-      <section className="py-12">
-        <ProductGrid2x2 />
-      </section>
+      </div>
     </div>
   );
 }

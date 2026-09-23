@@ -6,19 +6,20 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
-import { useLocation } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { SiteNav } from "../components/SiteNav";
-import { SiteFooter } from "../components/SiteFooter";
-import { CartProvider } from "../context/CartContext";
-import { CartDrawer } from "../components/CartDrawer";
-import PageTransition from "../components/PageTransition";
-import { use3DEffects } from "../hooks/use3DEffects";
+import { CartProvider } from "@/lib/cart";
+import { Header } from "@/components/Header";
+import { CartDrawer } from "@/components/CartDrawer";
+import { Footer } from "@/components/Footer";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CatalogProvider } from "@/context/CatalogContext";
+import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -84,31 +85,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "My Small Things — Small Things. Big Impact." },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
+      },
+      { title: "My Small Things by Mishel | Compact Smart Appliances" },
       {
         name: "description",
         content:
-          "Luxury compact tech store: mini washing machine, shoe washer, precision blower and electronic badge.",
-      },
-      { name: "author", content: "Brand Up" },
-      { property: "og:title", content: "My Small Things — Small Things. Big Impact." },
-      {
-        property: "og:description",
-        content: "Four compact machines, engineered like flagship tech.",
+          "Premium Mini washing machine, Mini shoe washer, Mini washing machine Grey and Electronic Badge. Free nationwide delivery.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@500;600;700&display=swap",
       },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
@@ -119,11 +120,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark max-w-[100vw] overflow-x-hidden">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body className="relative w-full max-w-[100vw] overflow-x-hidden bg-background text-foreground">
+      <body>
         {children}
         <Scripts />
       </body>
@@ -133,23 +134,23 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  use3DEffects();
   const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <div className="relative w-full max-w-[100vw] overflow-x-hidden">
-          <SiteNav />
-          {/* Required: nested routes render here. Wrapping with PageTransition adds page fade/scale */}
-          <PageTransition locationKey={location.pathname ?? "page"}>
+      <SiteSettingsProvider>
+        <CatalogProvider>
+          <CartProvider>
+            {!isAdmin && <Header />}
+            {!isAdmin && <CartDrawer />}
             <Outlet />
-          </PageTransition>
-          <SiteFooter />
-          <CartDrawer />
-          <Toaster position="bottom-right" theme="dark" />
-        </div>
-      </CartProvider>
+            {!isAdmin && <Footer />}
+            {!isAdmin && <WhatsAppButton />}
+            <Toaster position="bottom-right" theme="dark" />
+          </CartProvider>
+        </CatalogProvider>
+      </SiteSettingsProvider>
     </QueryClientProvider>
   );
 }
